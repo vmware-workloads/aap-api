@@ -324,7 +324,7 @@ class AapApi(object):
 
     def wait_for_job_completion(self, job: dict, interval: int = 5, max_timeout_seconds: int = 300):
         """Wait for a job to complete, checking the status at the specified interval."""
-        for _ in range(0, max_timeout_seconds, max_timeout_seconds):
+        for _ in range(0, max_timeout_seconds, interval):
             status = self.get_job_status(job=job)
             if status in ('successful', 'failed', 'error', 'canceled'):
                 return status
