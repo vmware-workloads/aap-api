@@ -426,7 +426,7 @@ def handler(context, inputs):
     #aap_job = aap.launch_job_template(job_template_id=aap_job_template.get("id"), inventory_id=aap_inventory.get("id"))
 
     # Wait for the job to complete
-    aap.wait_for_job_completion(job=aap_job)
+    #aap.wait_for_job_completion(job=aap_job)
 
 
 if __name__ == "__main__":
