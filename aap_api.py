@@ -35,7 +35,7 @@ class AapHost(object):
 
         # ansible_host is minimally required so Ansible Automation Platform can
         # reach the system to be configured. Typically, the system is not in DNS.
-        variables = {"ansible_host": host.get("networks")[0].get("address")}
+        variables = {"ansible_host": host.get("address")}
         for key, value in host_variables.items():
             variables[key] = value
 
@@ -407,7 +407,7 @@ def handler(context, inputs):
 
 
 if __name__ == "__main__":
-    test = json.load(open("test-01.json"))
+    test = json.load(open("test-02.json"))
 
     class Passthrough(object):
         def __init__(self):
