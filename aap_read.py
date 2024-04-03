@@ -233,6 +233,28 @@ class AapApi(object):
         response = self.__delete(path=self.PATH_INVENTORY, id=inventory_id)
 
 
+    def launched_job_template(self, job_template_id: dict, inventory_id: int) -> dict:
+        """Launch a job template with a specific inventory."""
+        path = self.PATH_JOB_TEMPLATES + str(job_template_id)
+        data = {
+            "inventory": inventory_id,
+        }
+        response = self.__post(path=path, data=data)
+        pass
+        return response
+
+    def lookup_inventory(
+        self, name: str, organization_id: int = DEFAULT_ORGANIZATION_ID
+    ) -> dict:
+        """lookup inventory"""
+        inventory = self.find_inventory_by_name(name=name)
+        return inventory
+
+    def delete_inventory(self, inventory_id: int):  
+        """Delete an inventory"""
+        response = self.__delete(path=self.PATH_INVENTORY, id=inventory_id)       
+
+
     def get_job_status(self, job: dict):
         """Retrieve the status of a specific job."""
         path_job_url = job.get("url")
@@ -288,11 +310,16 @@ def handler(context, inputs):
     # Find the organization id
     aap_organization = aap.find_organization_by_name(name=organization_name)
 
+    # Get the inventory id
+    # If an inventory with that exact name exists, we return its id.
+    aap_inventory = aap.lookup_inventory(name=inventory_name, organization_id=aap_organization.get("id"))
+
     # Find the job template
     aap_job_template = aap.find_job_template_by_name(name=job_template_name)
     if aap_job_template is None:
         raise ValueError(f"Could not find a job template with name '{job_template_name}'")
 
+    aap_job = aap.launched_job_template(job_template_id=aap_job_template.get("id"), inventory_id=aap_inventory.get("id"))
 
     # Check the status of any running jobs
     aap_job_status = aap.get_job_status(job=aap_job)
@@ -301,6 +328,3 @@ def handler(context, inputs):
     aap_cleanup = aap.clean()
 
     return aap_job_status
-
-
-
