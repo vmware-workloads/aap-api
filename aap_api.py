@@ -134,6 +134,18 @@ class AapApi(object):
         response.raise_for_status()
         if response.status_code not in [204]:
             return response.json()
+            
+    def __delete(self, path: str, id: int):
+        url = urllib.parse.urljoin(self.base_url, url=path)
+        delete_url = urllib.parse.urljoin(url, url=str(id))
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + self._token,
+        }
+        response = requests.delete(url=delete_url, headers=headers, verify=self.ssl_verify)
+        response.raise_for_status()
+        if response.status_code not in [202]:
+            return "RuntimeError in delete:" + str(response.status_code)            
 
     @classmethod
     def __find(cls, name: str, results: list) -> list:
@@ -332,6 +344,9 @@ class AapApi(object):
                 print(f"Job {job.get('id')} is {status}. Waiting {interval} seconds out of {max_timeout_seconds}.")
                 time.sleep(interval)
 
+    def clean(self):
+        response = self.__delete(path=self.PATH_TOKEN, id=self._token_id)
+
 
 def handler(context, inputs):
     # Ansible Automation Platform Configuration
@@ -404,17 +419,13 @@ def handler(context, inputs):
 
     # Wait for the job to complete
     aap.wait_for_job_completion(job=aap_job)
+    
+    # Cleanup: delete the access token_id
+    aap_cleanup = aap.clean()
+    
+    return {
+        "inventory_id": aap_inventory.get("id"),
+        "job_template_id": aap_job_template.get("id"),
+        "aap_job": aap_job
+    }
 
-
-if __name__ == "__main__":
-    test = json.load(open("test-02.json"))
-
-    class Passthrough(object):
-        def __init__(self):
-            pass
-
-        @classmethod
-        def getSecret(cls, x):
-            return x
-
-    handler(Passthrough(), test)
