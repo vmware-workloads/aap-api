@@ -428,4 +428,3 @@ def handler(context, inputs):
         "job_template_id": aap_job_template.get("id"),
         "aap_job": aap_job
     }
-
