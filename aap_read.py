@@ -275,7 +275,7 @@ class AapApi(object):
         response = self.__delete(path=self.PATH_TOKEN, id=self._token_id)
 
 
-def handler(context, inputs):
+def handler(context, inputs) -> dict:
     # Ansible Automation Platform Configuration
     base_url = inputs["base_url"]
     username = inputs["username"]
@@ -327,4 +327,17 @@ def handler(context, inputs):
     # Cleanup: delete the access token_id
     aap_cleanup = aap.clean()
 
-    return aap_job_status
+    print(f"job status: '{aap_job_status}")
+    
+    return {
+        "base_url": base_url,
+        "username": username,
+        "password": password,
+        "ssl_verify": ssl_verify,
+        "inventory_id": aap_inventory.get("id"),
+        "job_template_id": aap_job_template.get("id"),
+        "inventory_name": inventory_name,
+        "job_template_name": job_template_name,
+        "organization_name": organization_name,
+        "status" : aap_job_status
+    }
