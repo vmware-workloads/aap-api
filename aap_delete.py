@@ -193,7 +193,7 @@ class AapApi(object):
     def lookup_inventory(
         self, name: str, organization_id: int = DEFAULT_ORGANIZATION_ID
     ) -> dict:
-        """Create a new inventory and add hosts to the inventory"""
+        """Lookup inventory"""
         inventory = self.find_inventory_by_name(name=name)
         return inventory
 
@@ -258,7 +258,6 @@ def handler(context, inputs):
 
     # Get the inventory id
     # If an inventory with that exact name exists, we return its id.
-    # If an inventory with that exact name does not exist, we create one and return the id.
     aap_inventory = aap.lookup_inventory(name=inventory_name, organization_id=aap_organization.get("id"))
 
     # Delete the inventory
@@ -266,6 +265,3 @@ def handler(context, inputs):
     
     # Cleanup: delete the access token_id
     aap_cleanup = aap.clean()
-
-
-
