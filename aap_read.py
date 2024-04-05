@@ -332,7 +332,7 @@ def handler(context, inputs) -> dict:
     return {
         "base_url": base_url,
         "username": username,
-        "password": password,
+        "password": inputs["password"],
         "ssl_verify": ssl_verify,
         "inventory_id": aap_inventory.get("id"),
         "job_template_id": aap_job_template.get("id"),
