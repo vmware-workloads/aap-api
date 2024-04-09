@@ -27,17 +27,17 @@ class AapHost(object):
                  host_variables: dict = None,
                  host_groups: List[str] = None):
 
-        if host_variables is None:
-            host_variables = {}
+        if host_variables is not None:
+            variables = host_variables
+        else:
+            variables = {}
 
         if host_groups is None:
             host_groups = []
 
         # ansible_host is minimally required so Ansible Automation Platform can
         # reach the system to be configured. Typically, the system is not in DNS.
-        variables = {"ansible_host": host.get("address")}
-        for key, value in host_variables.items():
-            variables[key] = value
+        variables["ansible_host"] = host.get("address")
 
         self.id = host_id
         self.name = host.get("resourceName")
@@ -245,7 +245,7 @@ class AapApi(object):
         }
 
     def create_inventory(
-        self, name: str, organization_id: int = DEFAULT_ORGANIZATION_ID
+        self, name: str, variables: dict = None, organization_id: int = DEFAULT_ORGANIZATION_ID
     ) -> dict:
         """Create a new inventory and add hosts to the inventory"""
         inventory = self.find_inventory_by_name(name=name)
@@ -255,6 +255,8 @@ class AapApi(object):
                 "description": "Created via Aria Automation API",
                 "organization": organization_id,
             }
+            if variables is not None:
+                data['variables'] = json.dumps(variables)
             response = self.__post(path=self.PATH_INVENTORY, data=data)
             inventory = {
                 "name": name,
@@ -262,7 +264,7 @@ class AapApi(object):
             }
         return inventory
 
-    def create_group(self, name: str, inventory_id: int, description: str = None) -> dict:
+    def create_group(self, name: str, inventory_id: int, variables: dict = None, description: str = None) -> dict:
         """Create a new group"""
         group = self.find_group_by_name(name=name, inventory_id=inventory_id)
         if group is None:
@@ -271,6 +273,8 @@ class AapApi(object):
                 "description": "" if description is None else description,
                 "inventory": inventory_id,
             }
+            if variables.get(name) is not None:
+                data['variables'] = json.dumps(variables.get(name))
             response = self.__post(path=self.PATH_GROUPS, data=data)
             group = {
                 "name": name,
@@ -341,14 +345,20 @@ def handler(context, inputs):
     ssl_verify = inputs.get("ssl_verify", True)
     verbose = inputs.get("verbose", False)
 
-    # Ansible Automation Platform Inventory
+    # Ansible Automation Platform
     organization_name = inputs.get("organization_name", "Default")
+    job_template_name = inputs.get("job_template_name")
+
+    # Ansible Automation Platform Inventory
     inventory_name = inputs.get("inventory_name", "aap-api")
     hosts = inputs.get("hosts", [])
-    host_variables = inputs.get("host_variables", {})
     groups = [group_name for group_name in inputs.get("host_groups", {}).keys()]
     host_groups = invert_dict(d=inputs.get("host_groups", {}), name="resourceName")
-    job_template_name = inputs.get("job_template_name")
+
+    # Variables
+    host_variables = inputs.get("host_variables", {})
+    group_variables = inputs.get("group_variables", {})
+    inventory_variables = inputs.get("inventory_variables", {})
 
     # Create AAP Hosts
     aap_hosts = AapHost.create_app_hosts(hosts=hosts, host_variables=host_variables, host_groups=host_groups)
@@ -385,22 +395,29 @@ def handler(context, inputs):
     # Get the inventory id
     # If an inventory with that exact name exists, we return its id.
     # If an inventory with that exact name does not exist, we create one and return the id.
-    aap_inventory = aap.create_inventory(name=inventory_name, organization_id=aap_organization.get("id"))
+    aap_inventory = aap.create_inventory(name=inventory_name,
+                                         variables=inventory_variables,
+                                         organization_id=aap_organization.get("id"))
 
     # Get the group ids
     # If a group with the exact name exists, we return its id.
     # If a group with the exact name does not exist, we create one and return the id.
-    aap_groups = [aap.create_group(name=group, inventory_id=aap_inventory.get("id")) for group in groups]
+    aap_groups = [aap.create_group(name=group,
+                                   variables=group_variables,
+                                   inventory_id=aap_inventory.get("id")) for group in groups]
 
     # Add the hosts to the inventory
     # The host names *must* be unique within the inventory.
-    aap_hosts = aap.add_hosts_to_inventory(inventory_id=aap_inventory.get("id"), hosts=aap_hosts)
+    aap_hosts = aap.add_hosts_to_inventory(inventory_id=aap_inventory.get("id"),
+                                           hosts=aap_hosts)
 
     # Add the hosts to inventory groups
-    aap.add_hosts_to_groups(aap_hosts=aap_hosts, aap_groups=aap_groups)
+    aap.add_hosts_to_groups(aap_hosts=aap_hosts,
+                            aap_groups=aap_groups)
 
     # Start the job template with the created inventory
-    aap_job = aap.launch_job_template(job_template_id=aap_job_template.get("id"), inventory_id=aap_inventory.get("id"))
+    aap_job = aap.launch_job_template(job_template_id=aap_job_template.get("id"),
+                                      inventory_id=aap_inventory.get("id"))
 
     # Wait for the job to complete
     aap.wait_for_job_completion(job=aap_job)
