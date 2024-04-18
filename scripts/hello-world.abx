@@ -1,0 +1,12 @@
+---
+exportVersion: "1"
+exportId: "8a74802770e789af0170e800d99b0000"
+name: "Hello World Python3 ABX"
+runtime: "python"
+entrypoint: "handler"
+inputs:
+  target: "World"
+timeoutSeconds: 180
+deploymentTimeoutSeconds: 600
+actionType: "SCRIPT"
+memoryInMB: 150
