@@ -1,0 +1,17 @@
+---
+exportVersion: "1"
+exportId: "8a7480d57b78c390017bad28f95d0008"
+name: "READ-DMS-Moff"
+runtime: "python"
+entrypoint: "handler"
+inputs:
+  id: "330b9fc8-3063-41e3-94d0-5e4710651fae"
+  secret:8a7480a57ba4088f017bc5c1ecff0014: ""
+  secret:8a7480a57ba4088f017bc5c255640015: ""
+  secret:8a7480a57ba4088f017bc5c2b8320016: ""
+timeoutSeconds: 600
+deploymentTimeoutSeconds: 900
+dependencies: "requests\n"
+actionType: "SCRIPT"
+memoryInMB: 300
+runtimeVersion: "3.10"
