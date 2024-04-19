@@ -1,0 +1,14 @@
+---
+exportVersion: "1"
+exportId: "8a7482df8e34aaf8018e668609af0021"
+name: "banana"
+runtime: "python"
+entrypoint: "handler"
+inputs:
+  target: "World"
+timeoutSeconds: 600
+deploymentTimeoutSeconds: 900
+dependencies: "requests"
+actionType: "SCRIPT"
+memoryInMB: 300
+runtimeVersion: "3.10"
