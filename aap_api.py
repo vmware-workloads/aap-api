@@ -1,4 +1,5 @@
 import json
+import re
 import requests
 import time
 
@@ -49,7 +50,10 @@ class AapHost(object):
         aap_hosts = []
         for host_list in hosts:
             for host in host_list:
-                variables = host_variables.get(host.get("name"), {})
+                # In some cases the VM name is appended with [0], [1], [n] so we need
+                # to strip that off.
+                name = re.sub(r'(\[\d+\])*', '', host.get("name"))
+                variables = host_variables.get(name, {})
                 groups = host_groups.get(host.get('resourceName'), [])
                 aap_hosts.append(AapHost(host=host, host_variables=variables, host_groups=groups))
         return aap_hosts
@@ -445,3 +449,18 @@ def handler(context, inputs):
         "job_template_id": aap_job_template.get("id"),
         "aap_job": aap_job
     }
+
+
+if __name__ == "__main__":
+    test = json.load(open("test-04.json"))
+
+    class Passthrough(object):
+        def __init__(self):
+            pass
+
+        @classmethod
+        def getSecret(cls, x):
+            return x
+
+    handler(Passthrough(), test)
+
