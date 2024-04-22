@@ -420,7 +420,7 @@ def handler(context, inputs):
     # Wait for the job to complete
     aap.wait_for_job_completion(job=aap_job)
     
-    # Cleanup: delete the access token_id
+    # Cleanup: delete the access token
     aap_cleanup = aap.clean()
     
     return {
