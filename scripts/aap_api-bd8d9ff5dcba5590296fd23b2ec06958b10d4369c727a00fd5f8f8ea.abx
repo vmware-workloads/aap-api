@@ -1,0 +1,25 @@
+---
+exportVersion: "1"
+exportId: "8a7482df8e34aaf8018e668c3bfe0047"
+name: "aap_api"
+runtime: "python"
+entrypoint: "handler"
+inputs:
+  hosts:
+  - name: "foo1"
+  - name: "foo2"
+  - name: "foo3"
+  groups:
+  - "crdb"
+  - "rack1"
+  base_url: "https://wdc-ansible.vcf01.isvlab.vmware.com/"
+  password: "P@ssword123!"
+  username: "admin"
+  ssl_verify: "false"
+  inventory_name: "banana"
+timeoutSeconds: 600
+deploymentTimeoutSeconds: 900
+dependencies: "requests"
+actionType: "SCRIPT"
+memoryInMB: 300
+runtimeVersion: "3.10"
