@@ -15,6 +15,10 @@ def invert_dict(d: dict, name: str) -> dict:
     inv_d = {}
     for k, vs in d.items():
         for v in vs:
+            # When count == 1, aria returns a dict
+            # When count > 1, aria returns a list of dict
+            if not isinstance(v, list):
+                v = [v]
             for host in v:
                 host_name = host.get(name)
                 inv_d.setdefault(host_name, []).append(k)
@@ -49,6 +53,10 @@ class AapHost(object):
     def create_app_hosts(cls, hosts: list, host_variables: dict, host_groups: dict) -> List['AapHost']:
         aap_hosts = []
         for host_list in hosts:
+            # When count == 1, aria returns a dict
+            # When count > 1, aria returns a list of dict
+            if not isinstance(host_list, list):
+                host_list = [host_list]
             for host in host_list:
                 # In some cases the VM name is appended with [0], [1], [n] so we need
                 # to strip that off.
@@ -452,7 +460,7 @@ def handler(context, inputs):
 
 
 if __name__ == "__main__":
-    test = json.load(open("test-04.json"))
+    test = json.load(open("test-05.json"))
 
     class Passthrough(object):
         def __init__(self):
