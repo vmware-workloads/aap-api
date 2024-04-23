@@ -1,0 +1,16 @@
+---
+exportVersion: "1"
+exportId: "8a7482df8e34aaf8018e668c3bfe0047"
+name: "aap_api"
+runtime: "python"
+entrypoint: "handler"
+inputs:
+  secret:8a7481708e7d8090018ef5b57c0c053f: ""
+  secret:8a7481708e7d8090018ef5b5bd8c0540: ""
+  secret:8a7481708e7d8090018ef5b6bcc50545: ""
+timeoutSeconds: 600
+deploymentTimeoutSeconds: 900
+dependencies: "requests"
+actionType: "SCRIPT"
+memoryInMB: 300
+runtimeVersion: "3.10"
