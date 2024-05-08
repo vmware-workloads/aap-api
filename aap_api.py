@@ -43,9 +43,14 @@ class AapHost(object):
         # ansible_host is minimally required so Ansible Automation Platform can
         # reach the system to be configured. Typically, the system is not in DNS.
         variables["ansible_host"] = host.get("address")
+        variables["inventory_hostname"] = host.get("hostName", "")
 
         self.id = host_id
-        self.name = host.get("resourceName")
+
+        # aria automation appends [x] when creating VM using count. this is a problem
+        # because these names do not adhere to host naming convention. We swap the '[' and ']'
+        # characters to '-' since this is what set-hostname is also doing.
+        self.name = re.sub(r'(\[|\])', '-', host.get("resourceName"))
         self.variables = json.dumps(variables)
         self.groups = host_groups
 
