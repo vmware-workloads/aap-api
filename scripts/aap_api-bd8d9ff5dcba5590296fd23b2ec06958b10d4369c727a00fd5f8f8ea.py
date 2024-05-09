@@ -50,7 +50,9 @@ class AapHost(object):
         # aria automation appends [x] when creating VM using count. this is a problem
         # because these names do not adhere to host naming convention. We swap the '[' and ']'
         # characters to '-' since this is what set-hostname is also doing.
-        self.name = re.sub(r'(\[|\])', '-', host.get("resourceName"))
+        #self.name = re.sub(r'(\[|\])', '-', host.get("resourceName"))
+        
+        self.name = re.sub(r'\[.*?\]', '-', host.get("resourceName"))
         
         self.variables = json.dumps(variables)
         self.groups = host_groups
