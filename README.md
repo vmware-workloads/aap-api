@@ -18,16 +18,14 @@ Note: These instructions are based and tested on Aria Automation 8.16.
 1. In Aria Automation Assembler, open **Extensibility**, then select **Actions**.
 
    <img src="./assets/images/aap_api_install_01.png" alt="Aria Extensibility Actions" width="400"/>
-</br>
-</br>
+
 
 2. Select **New**, and fill out the following fields:
    * Name: aap_api
    * Project: ***\<select the project for the action\>***
 
    <img src="./assets/images/aap_api_install_02.png" alt="New Action" width="400"/>
-</br>
-</br>
+
 
 3. In the new action:
    * Select **Python 3.10**
@@ -35,8 +33,7 @@ Note: These instructions are based and tested on Aria Automation 8.16.
    * Copy and paste the aap_api.py code in the code section.
 
    <img src="./assets/images/aap_api_install_03.png" alt="New Action Parameters 1" width="400"/>
-</br>
-</br>
+
 
 4. In the new action:
    * Set the main function to **handler** 
@@ -45,8 +42,7 @@ Note: These instructions are based and tested on Aria Automation 8.16.
    * Leave the **FaaS provider** as ***Auto Select*** 
 
    <img src="./assets/images/aap_api_install_04.png" alt="New Action Parameters 2" width="400"/>
-</br>
-</br>   
+ 
 
 5. Repeat steps 1 to 4 for the following actions. 
    * ***aap_api.py***
@@ -54,18 +50,16 @@ Note: These instructions are based and tested on Aria Automation 8.16.
    * ***aap_delete.py***
    
    <img src="./assets/images/aap_api_install_05.png" alt="AAP Actions" width="400"/>
-</br>
-</br>
+
 
 ### Custom Resources
 
-6. In Aria Automation Assembler, open **Design**, then select **Custom Resources**. 
+1. In Aria Automation Assembler, open **Design**, then select **Custom Resources**. 
 
    <img src="./assets/images/aap_api_install_06.png" alt="Aria Custom Resources" width="400"/>
-</br>
-</br>
 
-7. Select **New**, and enter the following:
+
+2. Select **New**, and enter the following:
    * Name: ***Ansible Automation Platform*** 
    * Resource Type: ***custom.api.ansible_automation_platform***
    * Activate: ***enabled***
@@ -73,24 +67,118 @@ Note: These instructions are based and tested on Aria Automation 8.16.
    * Based on: ***ABX user defined schema***
    
    <img src="./assets/images/aap_api_install_07.png" alt="New Custom Resource" width="400"/>
-</br>
-</br>
 
-8. Scroll down to the **Lifecycle Actions** and select the ABX actions previously created, then click **Create**.
+
+3. Scroll down to the **Lifecycle Actions** and select the ABX actions previously created, then click **Create**.
    * Create: ***aap_api***
    * Read: ***aad_read***
    * Destroy: ***aap_delete***
    
    <img src="./assets/images/aap_api_install_08.png" alt="Lifecyle Actions" width="400"/>
-</br>
-</br>
 
-9.  The **Custom Resources** lists the newly created resource.
+
+4. The **Custom Resources** lists the newly created resource.
    
     <img src="./assets/images/aap_api_install_09.png" alt="AAP Customer Resource" width="400"/>
-</br>
-</br>
+
+
+## Configuration
+
+### Secret
+In this step, we store the password for the account that will be used on the Ansible Automation Platform. Storing the password in the secrets eliminates the need to use or store the password in cleartext.
+
+1. In Aria Automation Assembler, open **Infrastructure**, select **Secret**, then select **New**."
+
+   <img src="./assets/images/aap_api_configure_secret_01.png" alt="Aria Custom Resources" width="400"/>
+
+
+2. On the **Create Secret** window, enter the following:
+   * Name: ***\<user_at_hostname\>*** (or any other appropriate name)
+   * Scope: ***Organization*** (or select a specific project)
+   * Value: ***\<the password\>***
+   
+   <img src="./assets/images/aap_api_configure_secret_02.png" alt="Aria Custom Resources" width="400"/>
+
+
+3. The new entry appears listed in the secrets.
+   
+   <img src="./assets/images/aap_api_configure_secret_03.png" alt="Aria Custom Resources" width="400"/>
+
+
+### Property Groups
+In this step, we create a property group with the all parameters needed to connect to the Ansible Automation Platform. Using a property group makes is easier to reuse blueprints and reduces the risk of typos.
+
+1. In Aria Automation Assembler, open **Design**, select **Property Groups**, then select **New**."
+   
+   <img src="./assets/images/aap_api_configure_01.png" alt="Aria Custom Resources" width="400"/>
+
+
+2. On the new property groups, select and enter the following:
+   * Property Group Type: ***Constant Values***
+   * Name: ***\<name for the group\>***
+   * Scope: ***disabled***
+   * Project: ***\<select the project with the password secret\>***
+   
+   <img src="./assets/images/aap_api_configure_02.png" alt="Aria Custom Resources" width="400"/>
+
+
+3. At the **Properties**, click **New Property**.
+   
+   <img src="./assets/images/aap_api_configure_03.png" alt="Aria Custom Resources" width="400"/>
+
+
+4. At the **Properties**, click **New Property**, enter the following, then click **Create**.
+   * Name: ***server***
+   * Type: ***String***
+   * Constant value: ***\<the hostname or IP of the ansible automation platform server\>***
+   
+   <img src="./assets/images/aap_api_configure_04.png" alt="Aria Custom Resources" width="400"/>
+
+
+5. At the **Properties**, click **New Property**, enter the following, then click **Create**.
+   * Name: ***username***
+   * Type: ***String***
+   * Constant value: ***\<the username on the ansible automation platform server\>***
+   
+   <img src="./assets/images/aap_api_configure_05.png" alt="Aria Custom Resources" width="400"/>
+
+
+6. At the **Properties**, click **New Property**, enter the following, then click **Create**.
+   * Name: ***ssl***
+   * Type: ***Boolean***
+   * Constant value: ***\<check if SSL validation is required, uncheck if SSL validation not required\>***
+   
+   <img src="./assets/images/aap_api_configure_06.png" alt="Aria Custom Resources" width="400"/>
+
+
+7. At the **Properties**, click **New Property**, enter the following, then click **Create**.
+   * Name: ***ssl***
+   * Type: ***Boolean***
+   * Constant value: ***\<check if SSL validation is required, uncheck if SSL validation not required\>***
+   
+   <img src="./assets/images/aap_api_configure_07.png" alt="Aria Custom Resources" width="400"/>
+
+
+8. At the **Properties**, click **New Property**, enter the following, then click **Create**.
+   * Name: ***password***
+   * Type: ***String***
+   * Select Type: ***Secret***
+   * ***Select the appropriate secret from the list***
+   
+   <img src="./assets/images/aap_api_configure_07.png" alt="Aria Custom Resources" width="400"/>
+
+
+9. At the **Properties**, click **Create**.
+   
+   <img src="./assets/images/aap_api_configure_09.png" alt="Aria Custom Resources" width="400"/>
+
+
+10. The new property groups is listed and available.
+   
+    <img src="./assets/images/aap_api_configure_10.png" alt="Aria Custom Resources" width="400"/>
+
 
 ## Usage
+
 
 
