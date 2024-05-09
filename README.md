@@ -17,14 +17,14 @@ Note: These instructions are based and tested on Aria Automation 8.16.
 
 1. In Aria Automation Assembler, open **Extensibility**, then select **Actions**.
 
-   <img src="./assets/images/aap_api_install_01.png" alt="drawing"/>
+   <img src="./assets/images/aap_api_install_01.png" alt="Aria Extensibility Actions" width="400"/>
 
 
 2. Select **New**, and fill out the following fields:
    * Name: aap_api
    * Project: ***\<select the project for the action\>***
 
-   <img src="./assets/images/aap_api_install_02.png" alt="drawing"/>
+   <img src="./assets/images/aap_api_install_02.png" alt="New Action" width="400"/>
    
 
 3. In the new action:
@@ -32,7 +32,7 @@ Note: These instructions are based and tested on Aria Automation 8.16.
    * Select **Write Script**
    * Copy and paste the aap_api.py code in the code section.
 
-   <img src="./assets/images/aap_api_install_03.png" alt="drawing"/>
+   <img src="./assets/images/aap_api_install_03.png" alt="New Action Parameters 1" width="400"/>
   
 
 4. In the new action:
@@ -41,7 +41,7 @@ Note: These instructions are based and tested on Aria Automation 8.16.
      * ***requests***
    * Leave the **FaaS provider** as ***Auto Select*** 
 
-   <img src="./assets/images/aap_api_install_04.png" alt="drawing"/>
+   <img src="./assets/images/aap_api_install_04.png" alt="New Action Parameters 2" width="400"/>
    
 
 5. Repeat steps 1 to 4 for the following actions. 
@@ -49,14 +49,14 @@ Note: These instructions are based and tested on Aria Automation 8.16.
    * ***aap_read.py***
    * ***aap_delete.py***
    
-   <img src="./assets/images/aap_api_install_05.png" alt="drawing"/>
+   <img src="./assets/images/aap_api_install_05.png" alt="AAP Actions" width="400"/>
 
 
 ### Custom Resources
 
 6. In Aria Automation Assembler, open **Design**, then select **Custom Resources**. 
 
-   <img src="./assets/images/aap_api_install_06.png" alt="drawing"/>
+   <img src="./assets/images/aap_api_install_06.png" alt="Aria Custom Resources" width="400"/>
 
 
 7. Select **New**, and enter the following:
@@ -66,7 +66,7 @@ Note: These instructions are based and tested on Aria Automation 8.16.
    * Scope: ***\<as required\>***
    * Based on: ***ABX user defined schema***
    
-   <img src="./assets/images/aap_api_install_07.png" alt="drawing"/>
+   <img src="./assets/images/aap_api_install_07.png" alt="New Custom Resource" width="400"/>
 
 
 8. Scroll down to the **Lifecycle Actions** and select the ABX actions previously created, then click **Create**.
@@ -74,11 +74,11 @@ Note: These instructions are based and tested on Aria Automation 8.16.
    * Read: ***aad_read***
    * Destroy: ***aap_delete***
    
-   <img src="./assets/images/aap_api_install_08.png" alt="drawing"/>
+   <img src="./assets/images/aap_api_install_08.png" alt="Lifecyle Actions" width="400"/>
 
 
 9.  The **Custom Resources** lists the newly created resource.
    
-    <img src="./assets/images/aap_api_install_09.png" alt="drawing"/>
+    <img src="./assets/images/aap_api_install_09.png" alt="AAP Customer Resource" width="400"/>
 
 ## Usage
