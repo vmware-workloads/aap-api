@@ -60,6 +60,8 @@ This adds the url and credentials which is consumed when the aap_api runs
 
 1. Under  **Extensibility**, then **Actions Constants**.
 
+   <img src="./assets/images/action_constants.png" alt="AAP Actions" width="400"/>
+
 2. Add the folowing parameters:
    * ***username*** <--- a user defined in ansible, which has the correct access
    * ***password*** <--- password for the user
