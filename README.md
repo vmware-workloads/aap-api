@@ -15,6 +15,8 @@ Note: These instructions are based and tested on Aria Automation 8.16.
 
 ### Actions
 
+NB: For the simplest installation, follow the instructions below. It is also possible to clone the repository and add sync via the 'integration > github' facility in the infrastructure section of aria automation (see https://docs.vmware.com/en/VMware-Aria-Automation/SaaS/Using-Automation-Assembler/GUID-86778362-8C3B-4276-9F83-33E320EC960E.html) 
+
 1. In Aria Automation Assembler, open **Extensibility**, then select **Actions**.
 
    <img src="./assets/images/aap_api_install_01.png" alt="Aria Extensibility Actions" width="400"/>
@@ -50,6 +52,18 @@ Note: These instructions are based and tested on Aria Automation 8.16.
    * ***aap_delete.py***
    
    <img src="./assets/images/aap_api_install_05.png" alt="AAP Actions" width="400"/>
+
+
+### Action Constants
+
+This adds the url and credentials which is consumed when the aap_api runs
+
+1. Under  **Extensibility**, then **Actions Constants**.
+
+2. Add the folowing parameters:
+   * ***username*** <--- a user defined in ansible, which has the correct access
+   * ***password*** <--- password for the user
+   * ***base_url*** <--- url to the aap 
 
 
 ### Custom Resources
