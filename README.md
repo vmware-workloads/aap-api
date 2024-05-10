@@ -180,5 +180,44 @@ In this step, we create a property group with the all parameters needed to conne
 
 ## Usage
 
-
+```yaml
+resources:
+  Custom_api_ansible_automation_platform_1:
+    type: Custom.api.ansible_automation_platform
+    properties:
+      base_url: ${propgroup.aap01_home_lab.server}
+      username: ${propgroup.aap01_home_lab.username}
+      password: ${propgroup.aap01_home_lab.password}
+      ssl_verify: ${propgroup.aap01_home_lab.ssl}
+      verbose: true
+      organization_name: Default
+      job_template_name: CRDB Template
+      inventory_name: ${env.deploymentId}
+      inventory_variables:
+        use_ssl: true
+        lb_address:
+          - ${resource.web_lb.address}
+      hosts:
+        - ${resource.vm-1.*}
+        - ${resource.vm-2.*}
+        - ${resource.vm-3.*}
+      group_variables:
+        group1:
+          sql_port: 26257
+          rpc_port: 26357
+        group2:
+           service_name: cockroachdb
+      host_variables:
+        crdb-vm:
+          rack: 1
+          verbose: true
+      host_groups:
+        group1:
+          - ${resource.vm-1.*}
+        group2:
+          - ${resource.vm-2.*}
+        group3:
+          - ${resource.vm-1.*}
+          - ${resource.vm-2.*}
+```
 
