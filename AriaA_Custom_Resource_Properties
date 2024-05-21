@@ -1,0 +1,36 @@
+properties:
+  hosts:
+    type: object
+  verbose:
+    type: boolean
+  base_url:
+    type: string
+    encrypted: false
+    description: The base URL of the Ansible Automation Platform Server
+    minLength: 8
+  password:
+    type: string
+    encrypted: true
+  username:
+    type: string
+    encrypted: false
+  ssl_verify:
+    type: boolean
+  host_groups:
+    type: object
+  host_variables:
+    type: object
+    default: {}
+  inventory_name:
+    type: string
+    encrypted: false
+  group_variables:
+    type: object
+    default: {}
+  job_template_name:
+    type: string
+  organization_name:
+    type: string
+  inventory_variables:
+    type: object
+    default: {}
