@@ -10,18 +10,20 @@ VMware Aria Automation action to implement custom resources to interface with An
 - Wait and poll on the job status
 
 ## Deployment
-This section oulines the steps to deploy and configure the Ansible Automation Platform API in Aria Automation Assembler. These steps are based and tested on Aria Automation 8.16. 
+This section outlines the steps to deploy and configure the Ansible Automation Platform API in Aria Automation Assembler. These steps are based and tested on Aria Automation 8.16. 
 
-### Actions
+### Actions`
 
-NB: For the simplest installation, follow the instructions below. It is also possible to clone the repository and add sync via the 'integration > github' facility in the infrastructure section of aria automation (see https://docs.vmware.com/en/VMware-Aria-Automation/SaaS/Using-Automation-Assembler/GUID-86778362-8C3B-4276-9F83-33E320EC960E.html) 
+For the simplest installation, follow the instructions below. 
+
+It is also possible to clone the repository and add sync via the 'integration > github' facility in the infrastructure section of aria automation (see [Using Automation Assembler](https://docs.vmware.com/en/VMware-Aria-Automation/SaaS/Using-Automation-Assembler/GUID-86778362-8C3B-4276-9F83-33E320EC960E.html)). 
 
 1. In Aria Automation Assembler, open **Extensibility**, then select **Actions**.
    <br>
    <br>
    <img src="./assets/images/aap_api_install_01.png" alt="Aria Extensibility Actions" width="400"/>
 
-git diff
+
 2. Select **New**, and fill out the following fields:
    <br>
    <br>
@@ -60,16 +62,18 @@ git diff
 
 ### Action Constants
 
-This adds the url and credentials which is consumed when the aap_api runs
+This adds the url and credentials that are used when the aap_api actions run.
 
 1. Under  **Extensibility**, then **Actions Constants**.
-
+   <br>
+   <br>
    <img src="./assets/images/action_constants.png" alt="AAP Actions" width="400"/>
 
-2. Add the folowing parameters:
-   * ***username*** <--- a user defined in ansible, which has the correct access
-   * ***password*** <--- password for the user
-   * ***base_url*** <--- url to the aap 
+
+2. Add the following parameters:
+   * ***username***: user defined in Ansible Automation Platform
+   * ***password***: password for the user
+   * ***base_url***: url of the Ansible Automation Platform server
 
 
 ### Custom Resources
@@ -99,112 +103,47 @@ This adds the url and credentials which is consumed when the aap_api runs
    * Read: ***aad_read***
    * Destroy: ***aap_delete***
 
-#To-do 
-- input schema
 
-5The **Custom Resources** lists the newly created resource.
+4. Select the **Properties** tab and create the following properties.
+   <br>
+   <br>
+   <img src="./assets/images/aap_api_install_08b.png" alt="AAP Customer Resource" width="400"/>
+```yaml
+properties:
+  hosts:
+    type: object
+  verbose:
+    type: boolean
+  ssl_verify:
+    type: boolean
+  host_groups:
+    type: object
+  host_variables:
+    type: object
+    default: {}
+  inventory_name:
+    type: string
+    encrypted: false
+  group_variables:
+    type: object
+    default: {}
+  job_template_name:
+    type: string
+  organization_name:
+    type: string
+  inventory_variables:
+    type: object
+    default: {}
+```
+
+5. The **Custom Resources** lists the newly created resource.
+   <br>
+   <br>
+   <img src="./assets/images/aap_api_install_09.png" alt="AAP Customer Resource" width="400"/>
+
    
-    <img src="./assets/images/aap_api_install_09.png" alt="AAP Customer Resource" width="400"/>
-
-
-
-## Configuration
-
-### Secret
-In this step, we store the password for the account that will be used on the Ansible Automation Platform. Storing the password in the secrets eliminates the need to use or store the password in cleartext.
-
-1. In Aria Automation Assembler, open **Infrastructure**, select **Secret**, then select **New**."
-
-   <img src="./assets/images/aap_api_configure_secret_01.png" alt="Aria Custom Resources" width="400"/>
-
-
-2. On the **Create Secret** window, enter the following:
-   * Name: ***\<user_at_hostname\>*** (or any other appropriate name)
-   * Scope: ***Organization*** (or select a specific project)
-   * Value: ***\<the password\>***
-   
-   <img src="./assets/images/aap_api_configure_secret_02.png" alt="Aria Custom Resources" width="400"/>
-
-
-3. The new entry appears listed in the secrets.
-   
-   <img src="./assets/images/aap_api_configure_secret_03.png" alt="Aria Custom Resources" width="400"/>
-
-
-### Property Groups (remove and add action constants)
-In this step, we create a property group with the all parameters needed to connect to the Ansible Automation Platform. Using a property group makes is easier to reuse blueprints and reduces the risk of typos.
-
-1. In Aria Automation Assembler, open **Design**, select **Property Groups**, then select **New**."
-   
-   <img src="./assets/images/aap_api_configure_01.png" alt="Aria Custom Resources" width="400"/>
-
-
-2. On the new property groups, select and enter the following:
-   * Property Group Type: ***Constant Values***
-   * Name: ***\<name for the group\>***
-   * Scope: ***disabled***
-   * Project: ***\<select the project with the password secret\>***
-   
-   <img src="./assets/images/aap_api_configure_02.png" alt="Aria Custom Resources" width="400"/>
-
-
-3. At the **Properties**, click **New Property**.
-   
-   <img src="./assets/images/aap_api_configure_03.png" alt="Aria Custom Resources" width="400"/>
-
-
-4. At the **Properties**, click **New Property**, enter the following, then click **Create**.
-   * Name: ***server***
-   * Type: ***String***
-   * Constant value: ***\<the hostname or IP of the ansible automation platform server\>***
-   
-   <img src="./assets/images/aap_api_configure_04.png" alt="Aria Custom Resources" width="400"/>
-
-
-5. At the **Properties**, click **New Property**, enter the following, then click **Create**.
-   * Name: ***username***
-   * Type: ***String***
-   * Constant value: ***\<the username on the ansible automation platform server\>***
-   
-   <img src="./assets/images/aap_api_configure_05.png" alt="Aria Custom Resources" width="400"/>
-
-
-6. At the **Properties**, click **New Property**, enter the following, then click **Create**.
-   * Name: ***ssl***
-   * Type: ***Boolean***
-   * Constant value: ***\<check if SSL validation is required, uncheck if SSL validation not required\>***
-   
-   <img src="./assets/images/aap_api_configure_06.png" alt="Aria Custom Resources" width="400"/>
-
-
-7. At the **Properties**, click **New Property**, enter the following, then click **Create**.
-   * Name: ***ssl***
-   * Type: ***Boolean***
-   * Constant value: ***\<check if SSL validation is required, uncheck if SSL validation not required\>***
-   
-   <img src="./assets/images/aap_api_configure_07.png" alt="Aria Custom Resources" width="400"/>
-
-
-8. At the **Properties**, click **New Property**, enter the following, then click **Create**.
-   * Name: ***password***
-   * Type: ***String***
-   * Select Type: ***Secret***
-   * ***Select the appropriate secret from the list***
-   
-   <img src="./assets/images/aap_api_configure_07.png" alt="Aria Custom Resources" width="400"/>
-
-
-9. At the **Properties**, click **Create**.
-   
-   <img src="./assets/images/aap_api_configure_09.png" alt="Aria Custom Resources" width="400"/>
-
-
-10. The new property groups is listed and available.
-   
-    <img src="./assets/images/aap_api_configure_10.png" alt="Aria Custom Resources" width="400"/>
-
-
 ## Usage
+This section describes the AAP_API custom resource variables, and how to use them.
 
 ```yaml
 resources:
