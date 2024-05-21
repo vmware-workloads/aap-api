@@ -9,77 +9,87 @@ VMware Aria Automation action to implement custom resources to interface with An
 - Invoke a job with an inventory
 - Wait and poll on the job status
 
-## Installation
-
-Note: These instructions are based and tested on Aria Automation 8.16. 
+## Deployment
+This section oulines the steps to deploy and configure the Ansible Automation Platform API in Aria Automation Assembler. These steps are based and tested on Aria Automation 8.16. 
 
 ### Actions
 
 1. In Aria Automation Assembler, open **Extensibility**, then select **Actions**.
-
+   <br>
+   <br>
    <img src="./assets/images/aap_api_install_01.png" alt="Aria Extensibility Actions" width="400"/>
 
-
+git diff
 2. Select **New**, and fill out the following fields:
+   <br>
+   <br>
+   <img src="./assets/images/aap_api_install_02.png" alt="New Action" width="400"/>
    * Name: aap_api
    * Project: ***\<select the project for the action\>***
 
-   <img src="./assets/images/aap_api_install_02.png" alt="New Action" width="400"/>
-
 
 3. In the new action:
+   <br>
+   <br>
+   <img src="./assets/images/aap_api_install_03.png" alt="New Action Parameters 1" width="400"/>
    * Select **Python 3.10**
    * Select **Write Script**
    * Copy and paste the aap_api.py code in the code section.
 
-   <img src="./assets/images/aap_api_install_03.png" alt="New Action Parameters 1" width="400"/>
-
 
 4. In the new action:
+   <br>
+   <br>
+   <img src="./assets/images/aap_api_install_04.png" alt="New Action Parameters 2" width="400"/>
    * Set the main function to **handler** 
    * In the **Dependancy** enter the following:
      * ***requests***
-   * Leave the **FaaS provider** as ***Auto Select*** 
-
-   <img src="./assets/images/aap_api_install_04.png" alt="New Action Parameters 2" width="400"/>
- 
+   * Leave the **FaaS provider** as ***Auto Select***
+   
 
 5. Repeat steps 1 to 4 for the following actions. 
+   <br>
+   <br>
+   <img src="./assets/images/aap_api_install_05.png" alt="AAP Actions" width="400"/>
    * ***aap_api.py***
    * ***aap_read.py***
    * ***aap_delete.py***
-   
-   <img src="./assets/images/aap_api_install_05.png" alt="AAP Actions" width="400"/>
 
 
 ### Custom Resources
 
 1. In Aria Automation Assembler, open **Design**, then select **Custom Resources**. 
-
+   <br>
+   <br>
    <img src="./assets/images/aap_api_install_06.png" alt="Aria Custom Resources" width="400"/>
 
 
 2. Select **New**, and enter the following:
+   <br>
+   <br>
+   <img src="./assets/images/aap_api_install_07.png" alt="New Custom Resource" width="400"/>
    * Name: ***Ansible Automation Platform*** 
    * Resource Type: ***custom.api.ansible_automation_platform***
    * Activate: ***enabled***
    * Scope: ***\<as required\>***
-   * Based on: ***ABX user defined schema***
+   * Based on: ***ABX user defined schema*** 
    
-   <img src="./assets/images/aap_api_install_07.png" alt="New Custom Resource" width="400"/>
-
 
 3. Scroll down to the **Lifecycle Actions** and select the ABX actions previously created, then click **Create**.
+   <br>
+   <br>
+   <img src="./assets/images/aap_api_install_08.png" alt="Lifecyle Actions" width="400"/>
    * Create: ***aap_api***
    * Read: ***aad_read***
    * Destroy: ***aap_delete***
-   
-   <img src="./assets/images/aap_api_install_08.png" alt="Lifecyle Actions" width="400"/>
 
+#To-do 
+- input schema
 
-4. The **Custom Resources** lists the newly created resource.
+5The **Custom Resources** lists the newly created resource.
    
     <img src="./assets/images/aap_api_install_09.png" alt="AAP Customer Resource" width="400"/>
+
 
 
 ## Configuration
@@ -105,7 +115,7 @@ In this step, we store the password for the account that will be used on the Ans
    <img src="./assets/images/aap_api_configure_secret_03.png" alt="Aria Custom Resources" width="400"/>
 
 
-### Property Groups
+### Property Groups (remove and add action constants)
 In this step, we create a property group with the all parameters needed to connect to the Ansible Automation Platform. Using a property group makes is easier to reuse blueprints and reduces the risk of typos.
 
 1. In Aria Automation Assembler, open **Design**, select **Property Groups**, then select **New**."
