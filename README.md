@@ -114,8 +114,7 @@ properties:
     type: object
   verbose:
     type: boolean
-  ssl_verify:
-    type: boolean
+    default: false
   host_groups:
     type: object
   host_variables:
@@ -131,6 +130,7 @@ properties:
     type: string
   organization_name:
     type: string
+    default: Default
   inventory_variables:
     type: object
     default: {}
@@ -150,10 +150,6 @@ resources:
   Custom_api_ansible_automation_platform_1:
     type: Custom.api.ansible_automation_platform
     properties:
-      base_url: ${propgroup.aap01_home_lab.server}
-      username: ${propgroup.aap01_home_lab.username}
-      password: ${propgroup.aap01_home_lab.password}
-      ssl_verify: ${propgroup.aap01_home_lab.ssl}
       verbose: true
       organization_name: Default
       job_template_name: CRDB Template
@@ -185,4 +181,154 @@ resources:
           - ${resource.vm-1.*}
           - ${resource.vm-2.*}
 ```
+<br>
+<br>
 
+### Variables 
+
+#### organization_name
+* Description: The name of the Ansible Automation Platform organization.
+* Type: String
+* Required: No
+* Default: Default 
+<br>
+<br>
+<img src="./assets/images/aap_api_variables_organization_name.png" alt="AAP Customer Resource" width="400"/>
+<br>
+<br>
+
+#### job_template_name
+* Description: The name of the Ansible Automation Platform organization.
+* Type: String
+* Required: **Yes**
+<br>
+<br>
+<img src="./assets/images/aap_api_variables_job_template_name.png" alt="AAP Customer Resource" width="400"/>
+<br>
+<br>
+
+#### inventory_name
+* Description: Name that will be used to create the inventory on the Ansible Automation Platform server. This value must be unique in the Ansible Automation Platform inventories. 
+* Type: String
+* Required: **Yes**
+
+To ensure the name is unique, it is suggested to use Aria Automation environment variables, such as ***deploymentId***.
+```yaml
+# this will create an inventory with the Aria Deployment UUID
+inventory_name: ${env.deploymentId}
+
+# this deployment ID can be prefixed or suffixed with other variables or strings
+inventory_name: kafka-${env.deploymentId}
+inventory_name: ${env.orgId}-${env.deploymentId}
+inventory_name: ${env.deploymentId}-${env.requestedBy}
+```
+<br>
+<img src="./assets/images/aap_api_variables_inventory_name.png" alt="AAP Customer Resource" width="400"/>
+<br>
+<br>
+
+#### inventory_variables
+* Description: This variables accepts a mapping with any valid yaml datatypes, including mappings. The variables defined here will be added as inventory variables.
+* Type: Mapping
+* Required: No
+<br>
+<br>
+```yaml
+inventory_variables:
+   use_ssl: true            # boolean
+   name: prod1              # string
+   lb_address:              # list
+     - 192.168.1.1
+     - 192.168.1.2
+   port: 80                 # numeric
+   credentials:             # mapping
+      user: joe
+      password: qwerty      # string
+```
+<br>
+<img src="./assets/images/aap_api_variables_inventory_variables.png" alt="AAP Customer Resource" width="400"/>
+<br>
+<br>
+
+#### hosts
+* Description: This variables contains the inventory hosts.
+* Type: List of Cloud.vSphere.Machine
+* Required: **Yes**
+
+This variable expects a list of Aria Automation resources of type ***Cloud.vSphere.Machine***.
+```yaml
+hosts:
+  - ${resource.control-center.*}
+  - ${resource.zookeeper.*}
+  - ${resource.kafka-broker.*}
+```
+<br>
+<img src="./assets/images/aap_api_variables_hosts.png" alt="AAP Customer Resource" width="400"/>
+<br>
+<br>
+
+#### host_variables
+* Description: This variables expects a mapping of variables that will be assigned to the host(s). The mapping uses the ***Cloud.vSphere.Machine*** name to select the host(s).
+* Type: Mapping
+* Required: No
+
+**Note**: When creating multiple ***Cloud.vSphere.Machine*** resources using the Aria Automation Assembler **count** variable, the host variables are applied to all the machines. If hosts require different variable or values, then multiple ***Cloud.vSphere.Machine*** instances (i.e. count: 1) with unique names will need to be created, and variables assigned to each one.
+```yaml
+resources:
+  crdb-vm:           # the resource name
+    type: Cloud.vSphere.Machine
+ #
+ # [...]   
+ #
+  aap_api:
+    host_variables:
+      crdb-vm:
+        rack: 1
+        port: 80
+        verbose: true
+        disks: ${input.diskConfig}
+```
+<br>
+<img src="./assets/images/aap_api_variables_host_variables.png" alt="AAP Customer Resource" width="400"/>
+<br>
+<br>
+
+
+#### host_groups
+* Description: This variables defines the groups, and which hosts are part of the group.
+* Type: Mapping of list of Cloud.vSphere.Machine
+* Required: No
+<br>
+<br>
+```yaml
+host_groups:
+  control_center:
+    - ${resource.control-center.*}
+  zookeeper:
+    - ${resource.zookeeper.*}
+  kafka_broker:
+    - ${resource.kafka-broker.*}
+```
+<br>
+<img src="./assets/images/aap_api_variables_host_groups_01.png" alt="AAP Customer Resource" width="400"/>
+<br>
+<img src="./assets/images/aap_api_variables_host_groups_02.png" alt="AAP Customer Resource" width="400"/>
+<br>
+<br>
+
+####  group_variables
+* Description: 
+* Type: Mapping 
+* Required: No
+
+The name of the group must match a group defined in ***host groups***. 
+```yaml
+group_variables:
+  crdb:
+    psql_port: 26257
+    rpc_port: 26357
+```
+<br>
+<img src="./assets/images/aap_api_variables_group_variables.png" alt="AAP Customer Resource" width="400"/>
+<br>
+<br>
