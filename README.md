@@ -233,6 +233,7 @@ inventory_name: ${env.deploymentId}-${env.requestedBy}
 * Required: No
 <br>
 <br>
+
 ```yaml
 inventory_variables:
    use_ssl: true            # boolean
@@ -300,6 +301,7 @@ resources:
 * Required: No
 <br>
 <br>
+
 ```yaml
 host_groups:
   control_center:
