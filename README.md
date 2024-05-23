@@ -12,7 +12,7 @@ VMware Aria Automation action to implement custom resources to interface with An
 ## Deployment
 This section outlines the steps to deploy and configure the Ansible Automation Platform API in Aria Automation Assembler. These steps are based and tested on Aria Automation 8.16. 
 
-### Actions`
+### Actions
 
 For the simplest installation, follow the instructions below. 
 
