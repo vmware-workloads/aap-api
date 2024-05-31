@@ -36,7 +36,7 @@ jobs:
         ls ${{ github.workspace }}
     
     - name: Creating Zip
-      run: zip -r release.zip . -x ".git/*" ".github/*"
+      run: zip -r aap_api.zip . -x ".git/*" ".github/*" "assets/*"
 
     - name: Upload the artifacts
       uses: skx/github-action-publish-binaries@release-1.3
@@ -44,4 +44,4 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         releaseId: ${{ needs.create_release.outputs.id }}
-        args: '*.zip'
+        args: 'aap_api.zip'
