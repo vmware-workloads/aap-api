@@ -13,6 +13,12 @@ jobs:
         python-version: ["3.10"]
 
     steps:
+    - name: Check object
+      run: |
+        cat << OBJECT
+        ${{ toJson(github) }}
+        OBJECT
+    
     - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
     - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
     - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
@@ -43,5 +49,5 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        releaseId: ${{ needs.create_release.outputs.id }}
+        releaseId: ${{ github.event.release.tag_name }}
         args: 'aap_api.zip'
