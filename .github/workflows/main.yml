@@ -1,0 +1,22 @@
+on:
+  push:
+    branches:
+    - main
+    - release/*
+
+jobs:
+  build:
+  
+    runs-on: [linux-latest]
+    strategy:
+      matrix:
+        python-version: ["3.10"]
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Download libraries
+      run: pip install -r requirements.txt --target=./
+    
+    - name: Creating Zip
+      run: zip -r release.zip . -x ".git/*" ".github/*"
