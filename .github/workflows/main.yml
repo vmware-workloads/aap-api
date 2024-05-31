@@ -49,5 +49,5 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        releaseId: ${{ github.event.release.tag_name }}
+        releaseId: ${{ github.event.ref_name }}
         args: 'aap_api.zip'
