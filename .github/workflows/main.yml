@@ -1,9 +1,7 @@
 on:
-  push:
+  create:
     tags:
-      - 'v*'
-  release:
-    types: [ created ]
+      - v*
       
 jobs:
   build:
