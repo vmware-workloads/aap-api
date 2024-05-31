@@ -1,7 +1,8 @@
 on:
+  create:
+    tags:
+      - v*
   push:
-    branches:
-      - '**'
     tags:
       - '*'
       
