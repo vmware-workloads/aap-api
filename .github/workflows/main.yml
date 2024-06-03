@@ -44,13 +44,13 @@ jobs:
         ls ${{ github.workspace }}
     
     - name: Creating AAP API
-      run: zip -r aap_api.zip . -r -x ".git/*" ".github/*" ".gitignore" "scripts/*" "assets/*" "__pycache__" "bin/*" "*.abx" "aap_*.zip"  "aap_delete.*" "aap_read.*" "mypy*" "typing_extensions.py"
+      run: zip -r aap_api.zip . -r -x ".git/*" ".github/*" ".gitignore" "scripts/*" "assets/*" "__pycache__/*" "bin/*" "*.abx" "aap_*.zip"  "aap_delete.*" "aap_read.*" "mypy*" "typing_extensions.py" "AriaA_Custom_Resource_Properties"
 
     - name: Creating AAP Read
-      run: zip -r aap_read.zip . -r -x ".git/*" ".github/*" ".gitignore" "scripts/*" "assets/*" "__pycache__" "bin/*" "*.abx" "aap_*.zip" "aap_delete.*" "aap_api.*" "mypy*" "typing_extensions.py"
+      run: zip -r aap_read.zip . -r -x ".git/*" ".github/*" ".gitignore" "scripts/*" "assets/*" "__pycache__/*" "bin/*" "*.abx" "aap_*.zip" "aap_delete.*" "aap_api.*" "mypy*" "typing_extensions.py" "AriaA_Custom_Resource_Properties"
 
     - name: Creating Delete
-      run: zip -r aap_delete.zip . -r -x ".git/*" ".github/*" ".gitignore" "scripts/*" "assets/*" "__pycache__" "bin/*" "*.abx" "aap_*.zip" "aap_api.*" "aap_read.*" "mypy*" "typing_extensions.py"
+      run: zip -r aap_delete.zip . -r -x ".git/*" ".github/*" ".gitignore" "scripts/*" "assets/*" "__pycache__/*" "bin/*" "*.abx" "aap_*.zip" "aap_api.*" "aap_read.*" "mypy*" "typing_extensions.py" "AriaA_Custom_Resource_Properties"
 
     - name: Create Release
       id: create_release
