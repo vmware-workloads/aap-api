@@ -67,5 +67,5 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        tag_name="Release ${GITHUB_REF##*/}"
+        tag_name="Release ${{ github.ref }}"
         hub release edit $(find . -type f -name "*.zip" -printf "-a %p ") -m "" "$tag_name"
