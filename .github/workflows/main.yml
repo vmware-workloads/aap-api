@@ -67,9 +67,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        HUB_VERBOSE=1 hub release show
         sleep 10
-        HUB_VERBOSE=1 hub release show
+        HUB_VERBOSE=1 hub release show "${GITHUB_REF##*/}"
 
     - name: Upload Zip files
       env:
