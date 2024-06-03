@@ -44,13 +44,13 @@ jobs:
         ls ${{ github.workspace }}
     
     - name: Creating AAP API
-      run: aap_api.zip . -r -x ".git/*" ".github/*" ".gitignore" "scripts/*" "assets/*" "*.abx" "aap_delete.py" "aap_read.py"
+      run: zip -r aap_api.zip . -r -x ".git/*" ".github/*" ".gitignore" "scripts/*" "assets/*" "*.abx" "aap_delete.py" "aap_read.py"
 
     - name: Creating AAP Read
-      run: aap_read.zip . -r -x ".git/*" ".github/*" ".gitignore" "scripts/*" "assets/*" "*.abx" "aap_delete.py" "aap_api.py"
+      run: zip -r aap_read.zip . -r -x ".git/*" ".github/*" ".gitignore" "scripts/*" "assets/*" "*.abx" "aap_delete.py" "aap_api.py"
 
     - name: Creating Delete
-      run: aap_delete.zip . -r -x ".git/*" ".github/*" ".gitignore" "scripts/*" "assets/*" "*.abx" "aap_api.py" "aap_read.py"
+      run: zip -r aap_delete.zip . -r -x ".git/*" ".github/*" ".gitignore" "scripts/*" "assets/*" "*.abx" "aap_api.py" "aap_read.py"
 
     - name: Create Release
       id: create_release
