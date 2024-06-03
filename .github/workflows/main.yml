@@ -25,6 +25,9 @@ jobs:
     - name: Check out repository code
       uses: actions/checkout@v4
 
+    - name: Install missing hub command in latest linux runner
+      run: sudo apt-get update && sudo apt-get install -y hub
+
     - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
     - run: echo "🖥️ The workflow is now ready to test your code on the runner."
 
