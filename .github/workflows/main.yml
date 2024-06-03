@@ -49,46 +49,9 @@ jobs:
     - name: Creating Delete
       run: zip -r aap_delete.zip . -i "aap_delete.py" -x ".git/*" ".github/*" "assets/*" "*.py" "*.abx"
 
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
+    - name: Upload Zip files
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        draft: false
-        prerelease: false
-
-    - name: Upload Release AAP API Asset
-      id: upload-release-asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-        asset_path: ./aap_api.zip
-        asset_name: aap_api.zip
-        asset_content_type: application/zip
-
-    - name: Upload Release AAP Read Asset
-      id: upload-release-asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-        asset_path: ./aap_read.zip
-        asset_name: aap_read.zip
-        asset_content_type: application/zip
-
-    - name: Upload Release AAP Delete Asset
-      id: upload-release-asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-        asset_path: ./aap_delete.zip
-        asset_name: aap_delete.zip
-        asset_content_type: application/zip
+      run: |
+        tag_name="${GITHUB_REF##*/}"
+        hub release edit $(find . -type f -name "*.zip" -printf "-a %p ") -m "" "$tag_name"
