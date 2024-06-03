@@ -40,8 +40,14 @@ jobs:
       run: |
         ls ${{ github.workspace }}
     
-    - name: Creating Zip
-      run: zip -r aap_api.zip . -x ".git/*" ".github/*" "assets/*"
+    - name: Creating AAP API
+      run: zip -r aap_api.zip . -i "aap_api.py" -x ".git/*" ".github/*" "assets/*" "*.py" "*.abx"
+
+    - name: Creating AAP Read
+      run: zip -r aap_read.zip . -i "aap_read.py" -x ".git/*" ".github/*" "assets/*" "*.py" "*.abx"
+
+    - name: Creating Delete
+      run: zip -r aap_delete.zip . -i "aap_delete.py" -x ".git/*" ".github/*" "assets/*" "*.py" "*.abx"
 
     - name: Create Release
       id: create_release
@@ -54,7 +60,7 @@ jobs:
         draft: false
         prerelease: false
 
-    - name: Upload Release Asset
+    - name: Upload Release AAP API Asset
       id: upload-release-asset
       uses: actions/upload-release-asset@v1
       env:
@@ -63,4 +69,26 @@ jobs:
         upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
         asset_path: ./aap_api.zip
         asset_name: aap_api.zip
+        asset_content_type: application/zip
+
+    - name: Upload Release AAP Read Asset
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+        asset_path: ./aap_read.zip
+        asset_name: aap_read.zip
+        asset_content_type: application/zip
+
+    - name: Upload Release AAP Delete Asset
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+        asset_path: ./aap_delete.zip
+        asset_name: aap_delete.zip
         asset_content_type: application/zip
