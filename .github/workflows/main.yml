@@ -75,4 +75,4 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         tag_name="Release ${GITHUB_REF##*/}"
-        HUB_VERBOSE=1 hub release edit $(find . -type f -name "*.zip" -printf "-a %p ") -m "" "Release ${GITHUB_REF##*/}"
+        HUB_VERBOSE=1 hub release edit $(find . -type f -name "*.zip" -printf "-a %p ") -m "" "${GITHUB_REF##*/}"
