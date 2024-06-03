@@ -63,6 +63,14 @@ jobs:
         draft: false
         prerelease: false
 
+    - name: List releases
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        HUB_VERBOSE=1 hub release show
+        sleep 10
+        HUB_VERBOSE=1 hub release show
+
     - name: Upload Zip files
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
