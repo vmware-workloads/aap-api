@@ -12,8 +12,25 @@ VMware Aria Automation action to implement custom resources to interface with An
 ## Deployment
 This section outlines the steps to deploy and configure the Ansible Automation Platform API in Aria Automation Assembler. These steps are based and tested on Aria Automation 8.16. 
 
+### Action Constants
+
+We start by adding the Ansible Automation Platform URL and credentials that will be used by the actions. 
+
+1. Under  **Extensibility**, then **Actions Constants**.
+   <br>
+   <br>
+   <img src="./assets/images/action_constants.png" alt="AAP Actions" width="400"/>
+
+
+2. Add the following parameters:
+   * ***username***: user defined in Ansible Automation Platform
+   * ***password***: password for the user
+   * ***base_url***: url of the Ansible Automation Platform server
+
+   
 ### Actions
 
+#### Using Source Code
 For the simplest installation, follow the instructions below. 
 
 It is also possible to clone the repository and add sync via the 'integration > github' facility in the infrastructure section of aria automation (see [Using Automation Assembler](https://docs.vmware.com/en/VMware-Aria-Automation/SaaS/Using-Automation-Assembler/GUID-86778362-8C3B-4276-9F83-33E320EC960E.html)). 
@@ -60,20 +77,66 @@ It is also possible to clone the repository and add sync via the 'integration > 
    * ***aap_delete.py***
 
 
-### Action Constants
+#### Using Zip Bundles
+In this approach the script and all dependencies are bundled in a zip file. This method greatly simplifies the distribution of the actions and provides a solution to air-gaped environments where Aria Automation would not be able to download dependancies (e.g. 'requests').  
 
-This adds the url and credentials that are used when the aap_api actions run.
+**Note**. The zip bundles are provided as downloads on the projects releases. The bundles can also be created manually using the following procedure:
 
-1. Under  **Extensibility**, then **Actions Constants**.
+[Create a ZIP package for Python runtime extensibility actions](https://docs.vmware.com/en/VMware-Aria-Automation/8.16/Using-Automation-Assembler/GUID-CC6DEEF1-49E8-4881-82A6-FA10DC0135E8.html)
+
+1. Download the required zip bundles:
    <br>
    <br>
-   <img src="./assets/images/action_constants.png" alt="AAP Actions" width="400"/>
+   <img src="./assets/images/aap_api_install_zip_01.png" alt="Download Zip bundles" width="400"/>
+   * aap_api.zip
+   * aap_read.zip
+   * aap_delete.zip
 
 
-2. Add the following parameters:
-   * ***username***: user defined in Ansible Automation Platform
-   * ***password***: password for the user
-   * ***base_url***: url of the Ansible Automation Platform server
+2. In Aria Automation Assembler, select **Extensibility**, **Library**, then **Actions**. Select **New**.
+   <br>
+   <br>
+   <img src="./assets/images/aap_api_install_zip_02.png" alt="Download Zip bundles" width="400"/>
+
+
+3. At the ***New Action*** window, enter the following information, then click **Next**.
+   <br>
+   <br>
+   <img src="./assets/images/aap_api_install_zip_03.png" alt="Download Zip bundles" width="400"/>
+   * Name: ***aap_api***
+   * Project: ***\<select the appropriate project\>***
+   * Share with all projects in the organization: ***\<enable as required\>***
+
+   
+4. In the action properties, select the drop-down, then select ***Import Package***.
+   <br>
+   <br>
+   <img src="./assets/images/aap_api_install_zip_04.png" alt="Download Zip bundles" width="400"/>
+
+
+5. Click the ***Select File*** button, then choose the appropriate zip bundle.
+   <br>
+   <br>
+   <img src="./assets/images/aap_api_install_zip_05.png" alt="Download Zip bundles" width="400"/>
+   * aap_api → aap_api.zip
+   * aap_read → aap_read.zip
+   * aap_delete → aap_delete.zip
+
+5. At the action properties, enter the following information, then click **Save** and **Close**.<br>
+   <br>
+   **Note**: The action constants are the variables created in the previous section. 
+   <br>
+   <br>
+   <img src="./assets/images/aap_api_install_zip_06.png" alt="Download Zip bundles" width="400"/>
+   * Main function :
+     * aap_api → aap_api.handler
+     * aap_read → aap_read.handler
+     * aap_delete → aap_delete.handler
+   * FaaS provider: Auto Select
+   * Default inputs:
+     * Action Constant: base_url
+     * Action Constant: username
+     * Action Constant: password
 
 
 ### Custom Resources
