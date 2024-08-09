@@ -45,7 +45,6 @@ class AapHost(object):
         self.groups = host_groups
 
 
-
 class AapApi(object):
     PATH_TOKEN = "api/v2/tokens/"
     PATH_INVENTORY = "api/v2/inventories/"
@@ -60,7 +59,7 @@ class AapApi(object):
     DEFAULT_ORGANIZATION_ID = 1
 
     def __init__(
-        self, base_url: str, username: str, password: str, ssl_verify: bool = True
+            self, base_url: str, username: str, password: str, ssl_verify: bool = True
     ):
         """
 
@@ -220,18 +219,16 @@ class AapApi(object):
         response = self.__get(path=path_job_url)
         return response.get("status")
 
-
     def lookup_inventory(
-        self, name: str, organization_id: int = DEFAULT_ORGANIZATION_ID
+            self, name: str, organization_id: int = DEFAULT_ORGANIZATION_ID
     ) -> dict:
         """Create a new inventory and add hosts to the inventory"""
         inventory = self.find_inventory_by_name(name=name)
         return inventory
 
-    def delete_inventory(self, inventory_id: int):  
+    def delete_inventory(self, inventory_id: int):
         """Delete an inventory"""
         response = self.__delete(path=self.PATH_INVENTORY, id=inventory_id)
-
 
     def launched_job_template(self, job_template_id: dict, inventory_id: int) -> dict:
         """Launch a job template with a specific inventory."""
@@ -244,16 +241,15 @@ class AapApi(object):
         return response
 
     def lookup_inventory(
-        self, name: str, organization_id: int = DEFAULT_ORGANIZATION_ID
+            self, name: str, organization_id: int = DEFAULT_ORGANIZATION_ID
     ) -> dict:
         """lookup inventory"""
         inventory = self.find_inventory_by_name(name=name)
         return inventory
 
-    def delete_inventory(self, inventory_id: int):  
+    def delete_inventory(self, inventory_id: int):
         """Delete an inventory"""
-        response = self.__delete(path=self.PATH_INVENTORY, id=inventory_id)       
-
+        response = self.__delete(path=self.PATH_INVENTORY, id=inventory_id)
 
     def get_job_status(self, job: dict):
         """Retrieve the status of a specific job."""
@@ -270,7 +266,7 @@ class AapApi(object):
             else:
                 print(f"Job {job.get('id')} is {status}. Waiting {interval} seconds out of {max_timeout_seconds}.")
                 time.sleep(interval)
-                
+
     def clean(self):
         response = self.__delete(path=self.PATH_TOKEN, id=self._token_id)
 
@@ -287,15 +283,14 @@ def handler(context, inputs) -> dict:
     organization_name = inputs.get("organization_name", "Default")
     inventory_name = inputs.get("inventory_name", "aap-api")
     job_template_name = inputs.get("job_template_name")
-    
 
     if verbose:
         print(f"base_url: '{base_url}'")
         print(f"username: '{username}'")
         print(f"ssl_verify: '{ssl_verify}'")
+        print(f"organization_name: '{organization_name}'")
         print(f"inventory_name: '{inventory_name}'")
         print(f"job_template_name: '{job_template_name}")
-
 
     # Disable SSL warning if we are not verifying the ansible host SSL certificate
     if not ssl_verify:
@@ -319,24 +314,19 @@ def handler(context, inputs) -> dict:
     if aap_job_template is None:
         raise ValueError(f"Could not find a job template with name '{job_template_name}'")
 
-    aap_job = aap.launched_job_template(job_template_id=aap_job_template.get("id"), inventory_id=aap_inventory.get("id"))
-
-    # Check the status of any running jobs
-    aap_job_status = aap.get_job_status(job=aap_job)
-    
     # Cleanup: delete the access token_id
-    aap_cleanup = aap.clean()
+    aap.clean()
 
-    print(f"job status: '{aap_job_status}")
-    
     return {
         "base_url": base_url,
         "username": username,
+        "password": inputs.get("password"),
         "ssl_verify": ssl_verify,
+        "verbose": verbose,
         "inventory_id": aap_inventory.get("id"),
+        "inventory_name": aap_inventory.get("name"),
         "job_template_id": aap_job_template.get("id"),
-        "inventory_name": inventory_name,
-        "job_template_name": job_template_name,
-        "organization_name": organization_name,
-        "status" : aap_job_status
+        "job_template_name": aap_job_template.get("name"),
+        "organization_id": aap_organization.get("id"),
+        "organization_name": aap_organization.get("name")
     }
