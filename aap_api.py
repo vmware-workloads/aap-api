@@ -5,6 +5,7 @@ import time
 
 import urllib3
 import urllib.parse
+import string
 
 from requests.auth import HTTPBasicAuth
 from string import Template
