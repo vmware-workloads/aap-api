@@ -523,6 +523,7 @@ def handler(context, inputs):
         outputs["inventory_id"] = aap_inventory.get("id"),
         outputs["job_template_id"] = aap_job_template.get("id")
         outputs["aap_job"] =  aap_job
+        outputs["aap_organization"] = aap_organization
     
 
    # logic for the 'update' operation            
@@ -550,6 +551,8 @@ def handler(context, inputs):
         # populate the return structure
         outputs["inventory_id"] = aap_inventory.get("id"),
         outputs["job_template_id"] = aap_job_template.get("id")
+        outputs["aap_job"] =  aap_job
+        outputs["aap_organization"] = aap_organization        
 
 
    # logic for the 'delete' operation
