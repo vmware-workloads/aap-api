@@ -564,7 +564,6 @@ def handler(context, inputs):
 
         # populate the return structure
         outputs["inventory_id"] = aap_inventory.get("id"),
-        outputs["job_template_id"] = aap_job_template.get("id")
 
 
 ####
