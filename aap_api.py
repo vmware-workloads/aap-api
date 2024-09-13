@@ -528,6 +528,11 @@ def handler(context, inputs):
     elif abx_operation == "update":
         # update logic goes here
 
+        # populate the return structure
+        outputs["inventory_id"] = aap_inventory.get("id"),
+        outputs["job_template_id"] = aap_job_template.get("id")
+
+
 
    # logic for the 'read' operation
     elif abx_operation == "read":
