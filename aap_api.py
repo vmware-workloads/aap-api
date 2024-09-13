@@ -15,10 +15,6 @@ def invert_dict(d: dict, name: str) -> dict:
     inv_d = {}
     for k, vs in d.items():
         for v in vs:
-            # When count == 1, aria returns a dict
-            # When count > 1, aria returns a list of dict
-            if not isinstance"#81FF71"(v, list):
-                v = [v]
             for host in v:
                 host_name = host.get(name)
                 inv_d.setdefault(host_name, []).append(k)
@@ -470,9 +466,6 @@ def handler(context, inputs):
     # Find the organization id
     aap_organization = aap.find_organization_by_name(name=organization_name)
 
-
-
-
 ###
 
    #
@@ -572,7 +565,7 @@ def handler(context, inputs):
 
 
     
-    # Cleanup: delete the access token
+    # Cleanup: delete the ansible automation platform access token
     aap_cleanup = aap.clean()
     
     return outputs
