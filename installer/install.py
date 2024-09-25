@@ -18,21 +18,36 @@ configFile = f'config.json' # Name of the configuration file
 
 
 
-def get_vra_auth_token():
-    token_endpoint = config["aria_base_url"]+"/csp/gateway/am/api/login?access_token=null"
+def get_vra_auth_token(token_endpoint, requestData):
+    """
+        Gets the authentication token from aria.
+        First we need the refresh token, we then use this to obtain the full (bearer) token
+
+        Args:
+            token_endpoint (str): the url of the token site
+            requestData (str): username & password for auth
+
+        Returns:
+            str: login (bearer) token
+    """
 
     #  Get the initial refresh token
     headers = {"Content-Type": "application/json"}
-    requestData = {"username": config["aria_username"], "password":config["aria_password"]}
     body = json.dumps(requestData).encode('utf-8')
-    response = requests.post(token_endpoint, headers=headers, data=body, verify=False)
+    response = requests.post(token_endpoint, 
+                             headers=headers, 
+                             data=body, 
+                             verify=False)
+
     token_data = response.json()
     access_token = token_data.get("refresh_token")
     requestData = {"refreshToken": access_token}
     body = json.dumps(requestData).encode('utf-8')
   
     # From refresh token get Bearer token
-    response = requests.post(config["aria_base_url"]+"/iaas/api/login", headers=headers, data=body,
+    response = requests.post(config["aria_base_url"]+"/iaas/api/login", 
+                             headers=headers, 
+                             data=body,
                              verify=False)
     data = response.json()
     bearer_token = data.get("token")
@@ -408,7 +423,7 @@ projectName = config["project_name"]  # Retrieve the project name from the confi
 
 
 # Get the authentication token from the VCF Automation (vRA) API
-token = get_vra_auth_token()  
+token = get_vra_auth_token(config["aria_base_url"]+"/csp/gateway/am/api/login?access_token=null", {"username": config["aria_username"], "password":config["aria_password"]})  
 headers = {
     'authorization': f'Bearer {token}',
     'content-type': 'application/json',
