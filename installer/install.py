@@ -355,11 +355,11 @@ projectId = createOrUpdateProject()
 # Create secrets
 # These secrets will be used while running/executing the orchestrator action
 secrets = {
-    "aapURL": config["ansible_url"], 
-    "aapUser": config["ansible_user"], 
-    "aapPass": config["ansible_password"], 
-    "aapSSL": config["skip_certificate_check"], 
-    "aapRootCA": config["ansible_root_ca"]
+  "aapURL": config["ansible_url"], 
+  "aapUser": config["ansible_user"], 
+  "aapPass": config["ansible_password"], 
+  "aapSSL": config["skip_certificate_check"], 
+  "aapRootCA": config["ansible_root_ca"]
 }
 createSecrets(projectId, secrets)
 
@@ -373,21 +373,20 @@ abxActionId = createOrUpdateAbxAction(projectId,secretIds)
 
 # Create/update the custom resource
 properties = {
-             "properties": {
-               "hosts": {"type": "object","title": "Hosts","description": "Array of hosts to add to the AAP inventory"},
-               "verbose": {"type": "boolean","title": "Verbose Messages","description": "Enable verbose messages for debugging","default": False},
-               "base_url": {"type": "string","title": "Ansible Server URL","description": "URL of the Ansible Automation Platform REST API","default": ""},
-               "host_groups": {"type": "object","title": "Ansible inventory host groups","description": "(optional) Dictionary with groups as key and list of hosts in that group.","default": {}},
-               "host_variables": {"type": "object","title": "Ansible inventory host variables","description": "(optional) Any host variables to pass on to AAP","default": {}},
-               "inventory_name": {"type": "string","title": "Ansible inventory name","description": "The name of the inventory to be created on Ansible Automation Platform"},
-               "group_variables": {"type": "object","title": "AAP Group Variables","description": "(optional) Any group variables to pass on to AAP","default": {}},
-               "job_template_name": {"type": "string","title": "Ansible template name","description": "Name of the template to run on Ansible Automation Platform"},
-               "organization_name": {"type": "string","title": "Organization Name","description": "(optional) The name of the org to pass on to AAP","default": ""},
-               "inventory_variables": {"type": "object","title": "Ansible inventory variables","description": "(optional)  Dictionary with inventory variables","default": {}}
-          },
-          "required": ["hosts","inventory_name","job_template_name"]
-        }
-        
+  "properties": {
+    "hosts": {"type": "object","title": "Hosts","description": "Array of hosts to add to the AAP inventory"},
+    "verbose": {"type": "boolean","title": "Verbose Messages","description": "Enable verbose messages for debugging","default": False},
+    "base_url": {"type": "string","title": "Ansible Server URL","description": "URL of the Ansible Automation Platform REST API","default": ""},
+    "host_groups": {"type": "object","title": "Ansible inventory host groups","description": "(optional) Dictionary with groups as key and list of hosts in that group.","default": {}},
+    "host_variables": {"type": "object","title": "Ansible inventory host variables","description": "(optional) Any host variables to pass on to AAP","default": {}},
+    "inventory_name": {"type": "string","title": "Ansible inventory name","description": "The name of the inventory to be created on Ansible Automation Platform"},
+    "group_variables": {"type": "object","title": "AAP Group Variables","description": "(optional) Any group variables to pass on to AAP","default": {}},
+    "job_template_name": {"type": "string","title": "Ansible template name","description": "Name of the template to run on Ansible Automation Platform"},
+    "organization_name": {"type": "string","title": "Organization Name","description": "(optional) The name of the org to pass on to AAP","default": ""},
+    "inventory_variables": {"type": "object","title": "Ansible inventory variables","description": "(optional)  Dictionary with inventory variables","default": {}}
+  },
+    "required": ["hosts","inventory_name","job_template_name"]
+}      
 createOrUpdateAbxBasedCustomResource(projectId, abxActionId, properties)
 
 
