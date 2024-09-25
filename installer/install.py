@@ -334,7 +334,7 @@ def getSecrets(projectId):
     resp.raise_for_status()
     secretList = resp.json()["content"]
 
-    # Fetch and return the Ids of the secrets created for DSM environment
+    # Fetch and return the Ids of the secrets
     # credentials like hostname, username, password, certificate check and root CA
     secrets=['aapURL', 'aapUser', 'aapPass', 'aapSSL', 'aapRootCA']
     filtered_list = [d for d in secretList if d.get("name") in secrets and d.get("projectId") == projectId]
@@ -418,7 +418,7 @@ headers = {
 projectId = createOrUpdateProject()
 
 
-# Create secrets for DSM environment credentials like hostname, username and password
+# Create secrets
 # These secrets will be used while running/executing the orchestrator action
 createSecrets(projectId)
 
