@@ -415,9 +415,9 @@ def handler(context, inputs):
 
     # Setup Ansible Automation Platform credentials
 
-    base_url = inputs["base_url"]
-    username = inputs["username"]
-    password = context.getSecret(inputs["password"])
+    base_url = inputs["aapURL"]
+    username = inputs["aapUser"]
+    password = context.getSecret(inputs["aapPass"])
     ssl_verify = inputs.get("ssl_verify", True)
     verbose = inputs.get("verbose", False)
 
@@ -531,8 +531,8 @@ def handler(context, inputs):
         # update logic goes here
 
         # populate the return structure
-        outputs["inventory_id"] = aap_inventory.get("id"),
-        outputs["job_template_id"] = aap_job_template.get("id")
+        #outputs["inventory_id"] = aap_inventory.get("id"),
+        #outputs["job_template_id"] = aap_job_template.get("id")
 
 
 
