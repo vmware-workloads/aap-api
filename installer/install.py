@@ -13,7 +13,7 @@ contentSourceId = ""
 
 
 
-abxScript = f'aap.py' # Name of the ABX script to 'install'
+abxScript = f'aap_api.py' # Name of the ABX script to 'install'
 configFile = f'config.json' # Name of the configuration file
 
 
