@@ -18,14 +18,15 @@ configFile = f'config.json' # Name of the configuration file
 
 
 
-def get_vra_auth_token(token_endpoint, requestData):
+def get_vra_auth_token(token_endpoint, requestData, bearer_endpoint):
     """
         Gets the authentication token from aria.
         First we need the refresh token, we then use this to obtain the full (bearer) token
 
         Args:
             token_endpoint (str): the url of the token site
-            requestData (str): username & password for auth
+            requestData (dict): username & password for auth
+            bearer_endpoint (str): the url of the bearer token site
 
         Returns:
             str: login (bearer) token
@@ -45,7 +46,7 @@ def get_vra_auth_token(token_endpoint, requestData):
     body = json.dumps(requestData).encode('utf-8')
   
     # From refresh token get Bearer token
-    response = requests.post(config["aria_base_url"]+"/iaas/api/login", 
+    response = requests.post(bearer_endpoint, 
                              headers=headers, 
                              data=body,
                              verify=False)
@@ -361,25 +362,19 @@ def getSecrets(projectId):
     return secretIds
 
 
-def createSecrets(projectId):
+def createSecrets(projectId, inputs):
     """
         Creates or updates secrets in the Aria platform for the given project ID.
 
         Args:
             projectId (str): The ID of the project.
+            inputs (dict): Secrets to add.
 
         Returns:
             None
     """
 
-    # Fetch the credential details from the 'config.json' file
-    inputs = {
-               "aapURL": config["ansible_url"], 
-               "aapUser": config["ansible_user"], 
-               "aapPass": config["ansible_password"], 
-               "aapSSL": config["skip_certificate_check"], 
-               "aapRootCA": config["ansible_root_ca"]
-    }
+
     for name,value in inputs.items():
         body = {
                  "name":name,
@@ -423,7 +418,11 @@ projectName = config["project_name"]  # Retrieve the project name from the confi
 
 
 # Get the authentication token from the VCF Automation (vRA) API
-token = get_vra_auth_token(config["aria_base_url"]+"/csp/gateway/am/api/login?access_token=null", {"username": config["aria_username"], "password":config["aria_password"]})  
+token_url = config["aria_base_url"]+"/csp/gateway/am/api/login?access_token=null"
+request_data = {"username": config["aria_username"], "password":config["aria_password"]}
+bearer_url = config["aria_base_url"]+"/iaas/api/login"
+
+token = get_vra_auth_token(token_url, request_data, bearer_url)  
 headers = {
     'authorization': f'Bearer {token}',
     'content-type': 'application/json',
@@ -435,7 +434,14 @@ projectId = createOrUpdateProject()
 
 # Create secrets
 # These secrets will be used while running/executing the orchestrator action
-createSecrets(projectId)
+secrets = {
+    "aapURL": config["ansible_url"], 
+    "aapUser": config["ansible_user"], 
+    "aapPass": config["ansible_password"], 
+    "aapSSL": config["skip_certificate_check"], 
+    "aapRootCA": config["ansible_root_ca"]
+}
+createSecrets(projectId, secrets)
 
 
 # Fetch the Ids of the secrets - like hostname, username and password
