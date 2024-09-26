@@ -415,8 +415,8 @@ def handler(context, inputs):
 
     # Setup Ansible Automation Platform credentials
 
-    base_url = inputs["aapURL"]
-    username = inputs["aapUser"]
+    base_url = context.getSecret(inputs["aapURL"])
+    username = context.getSecret(inputs["aapUser"])
     password = context.getSecret(inputs["aapPass"])
     ssl_verify = inputs.get("ssl_verify", True)
     verbose = inputs.get("verbose", False)
