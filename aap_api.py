@@ -529,6 +529,7 @@ def handler(context, inputs):
    # logic for the 'update' operation            
     elif abx_operation == "update":
         # update logic goes here
+        print("update logic goes here")
 
         # populate the return structure
         #outputs["inventory_id"] = aap_inventory.get("id"),
