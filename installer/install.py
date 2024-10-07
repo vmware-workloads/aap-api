@@ -220,7 +220,7 @@ def createOrUpdateProject():
     """
 
     # Get the list of existing projects
-    url = f'{baseUrl}/project-service/api/projects?page=0&size=20&%24orderby=name%20asc&excludeSupervisor=false'
+    url = f'{baseUrl}/project-service/api/projects?page=0&size=9999&%24orderby=name%20asc&excludeSupervisor=false'
     resp = requests.get(url, headers=headers, verify=False)
     resp.raise_for_status()
     existing = [x for x in resp.json()["content"] if x["name"] == projectName]
@@ -264,7 +264,7 @@ def getSecrets(projectId):
     """
 
     # Retrieve secrets from the platform API
-    url = f'{baseUrl}/platform/api/secrets?page=0&size=20'
+    url = f'{baseUrl}/platform/api/secrets?page=0&size=9999'
     resp = requests.get(url, headers=headers, verify=False)
     #print(resp.status_code, resp.text)
     resp.raise_for_status()
