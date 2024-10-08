@@ -18,17 +18,18 @@ Sample values are shown below:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 {
-  "ansible_url": "https://",
-  "ansible_user": "<ansible_user>",
-  "ansible_password": "<ansible_pass>",
-  "aria_base_url": "https://",
-  "abx_action_name": "My_ABX",
-  "cr_name": "my_aap",
-  "cr_type_name": "Custom.myAAP",
-  "aria_username": "<aria_user>",
-  "aria_password": "<aria_pass>",
-  "project_name": "MY_PROJECT",
-  "skip_certificate_check": "True",
+    "project_name":  "my project",
+    "aria_base_url":  "https://example.com",
+    "aria_username":  "Iorek.Byrnison",
+    "aria_password":  "P@ssw0rd",
+    "cr_name":  "AAP API Resource",
+    "cr_type_name":  "Custom.AAP",
+    "abx_action_name":  "AAP API ABX",
+    "ansible_url":  "https://wdc-ansible.vcf01.isvlab.vmware.com/",
+    "ansible_user":  "admin",
+    "ansible_password":  "P@ssword",
+    "ansible_root_ca":  "XXXXXXX",
+    "skip_certificate_check":  "True"
 }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
