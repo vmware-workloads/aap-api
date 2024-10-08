@@ -9,16 +9,16 @@ Add-Type -AssemblyName System.Windows.Forms
 function Create-Form {
     param(
         [array]$prePopulatedData,
-        [string]$filePath
+        [string]$title
     )
 
     
 
     # Create a form
     $form = New-Object System.Windows.Forms.Form
-    $form.Text = "Dynamic Input Form"
+    $form.Text = $title
     $form.Width = 500
-    $form.Height = 400 + (40 * $prePopulatedData.Count)
+    $form.Height = 100 + (40 * $prePopulatedData.Count)
 
     # Create a hash table to hold the textboxes for each field
     $textBoxes = @{}
@@ -68,32 +68,41 @@ function Create-Form {
     $form.CancelButton = $CancelButton
     $form.Controls.Add($CancelButton)
 
-    # Define button click action
-    $button.Add_Click({
-        # Collect the data from all text boxes
+    
+
+    # Show the form and capture the result
+    $result = $form.ShowDialog()
+
+    if ($result -eq [System.Windows.Forms.DialogResult]::OK) {
+        write-host "Submit pressed"
         $data = @{}
         foreach ($key in $textBoxes.Keys) {
             $data[$key] = $textBoxes[$key].Text
         }
-
-        if ($result -eq [System.Windows.Forms.DialogResult]::OK)
-        {
-            # Convert to JSON and write to file
-            $json = $data | ConvertTo-Json
-            $json | Out-File -FilePath $filePath
-
-            # Close the form after submitting
-            #$form.Close()
+        
+        $buttonData = @{
+        result        = "OK"
+        data      = $data
         }
-        elseif ($result -eq [System.Windows.Forms.DialogResult]::Cancel)
-        {
-            "here"
-            exit
-        }
-    })
 
-    # Show the form
-    $form.ShowDialog()
+    }
+    else {
+        
+        $buttonData = @{
+        result        = "Cancel"
+        data      = ""
+        }
+        
+    }
+        
+    #write-host "result is:" $buttonData.result
+    #write-host "data is:" $buttonData.data     
+    return $buttonData
+    
+
+    
+    #write-host $result
+    
 }           
 
 function Get-VraAuthToken {
@@ -204,7 +213,7 @@ function CreateOrUpdateProject {
         supervisors    = @()
         constraints    = @{}
         properties     = @{
-            "__projectPlacementPolicy" = "DEFAULT"
+        "__projectPlacementPolicy" = "DEFAULT"
         }
         operationTimeout = 0
         sharedResources  = $true
@@ -428,8 +437,8 @@ function Create-Secrets {
         $url = "$baseUrl/platform/api/secrets?`$filter=name eq '$name'"
         $response = Invoke-RestMethod -Uri $url -Headers $headers -Method Get 
         
-        $jsonBody = $body | ConvertTo-Json
-        $jsonBody
+        $jsonBody = $body | ConvertTo-Json -Depth 100
+        #$jsonBody
         
         # Check if the secret already exists
         $existingSecrets = $response.content
@@ -438,9 +447,9 @@ function Create-Secrets {
             #write-host "updating existing secrets"
             $id = $existingSecrets[0].id
             $url = "$baseUrl/platform/api/secrets/$id"
-            $url
+            #$url
             $response = Invoke-RestMethod -Uri $url -Headers $headers -Method Patch -Body $jsonBody 
-            $response   # Optionally suppress output
+            $response | out-null  # Optionally suppress output
         }
         else {
             # Create a new secret if it doesn't exist
@@ -470,11 +479,17 @@ if (Test-Path $configFile) {
     # Populate prePopulatedData with the fields from the JSON
     $prePopulatedData = ($config.psobject.properties) | ForEach-Object -Process {$_.Name}
 
-    #write-output($prePopulatedData)
-
-    $myForm = Create-Form -prePopulatedData $prePopulatedData -filePath $configFile
-    if ($myForm -eq "OK") {
+    # Display the form & capture the result
+    $myForm = Create-Form -prePopulatedData $prePopulatedData -title "AAP API Installer"
+    
+    if ($myForm.result -eq "OK") {
         "Form submitted"
+        
+        # Convert to JSON and write to file
+        $json = $myForm.data | ConvertTo-Json
+        $json | Out-File -FilePath $configFile
+            
+        $json
     }
     else {
         "Cancelled"
@@ -524,11 +539,21 @@ $secrets = @{
 Create-Secrets -projectID $projectId -inputs $secrets -baseUrl $config.aria_base_url -headers $headers
 
 
-# Fetch the Ids of the secrets - like hostname, username and password
+# Fetch the Ids of the secrets 
 $secretIds = Get-Secrets -projectID $projectId -baseUrl $config.aria_base_url -headers $headers
 
+
+$abxActionParams = @{ 'projectID' = $projectId;
+                      'secretIds' = $secretIds;
+                      'abxActionName' = $abxActionName;
+                      'abxScript' = $abxScript;
+                      'baseUrl' = $config.aria_base_url;
+                      'headers' = $headers 
+                    }
+                      
+
 # Create/update the ABX action 
-$abxActionId = Create-OrUpdateAbxAction -projectID $projectId -secretIds $secretIds -abxActionName $abxActionName -abxScript $abxScript -baseUrl $config.aria_base_url -headers $headers
+$abxActionId = Create-OrUpdateAbxAction @abxActionParams
 
 
 # Create/update the custom resource
@@ -549,14 +574,14 @@ $properties = @{
 }
 
 $customResourceParams = @{ 'projectID' = $projectId;
-                        'abxActionId' = $abxActionId;
-                        'propertySchema' = $properties;
-                        'crName' = $crName;
-                        'crTypeName' = $crTypeName;
-                        'abxActionName' = $abxActionName;
-                        'baseUrl' = $config.aria_base_url;
-                        'headers' = $headers }
+                           'abxActionId' = $abxActionId;
+                           'propertySchema' = $properties;
+                           'crName' = $crName;
+                           'crTypeName' = $crTypeName;
+                           'abxActionName' = $abxActionName;
+                           'baseUrl' = $config.aria_base_url;
+                           'headers' = $headers
+                          }
                     
 
-#Create-OrUpdateAbxBasedCustomResource -projectID $projectId -abxActionId $abxActionId -propertySchema $properties -crName $crName -crTypeName $crTypeName -abxActionName $abxActionName -baseUrl $config.aria_base_url -headers $headers
 Create-OrUpdateAbxBasedCustomResource @customResourceParams
