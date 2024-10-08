@@ -8,39 +8,71 @@ Add-Type -AssemblyName System.Windows.Forms
 
 function Create-Form {
     param(
-        [array]$prePopulatedData,
+        [PSCustomObject]$config,
         [string]$title
     )
 
     
-
+    $configNames = $config.psobject.properties.name
+    $configValues = $config.psobject.properties.value   
+    
+    
+    # Get the largest strings from the input. This will determine the sizes of the gui elements
+    
+    $mylargeststring = $configValues | Sort length -desc | Select -first 1
+    $mylargestname = $configNames | Sort length -desc | Select -first 1
+    
+    
+    # Specify a font to obtain sizes deterministically 
+    $Font = New-Object System.Drawing.Font('Arial', 10)
+    
+    
+    # Compute the sizes of the largest strings
+    
+    $largestStringSize = [System.Windows.Forms.TextRenderer]::MeasureText($mylargeststring, $Font)
+    $largestNameSize = [System.Windows.Forms.TextRenderer]::MeasureText($mylargestname, $Font)
+    
+    
+    # Positions & constants
+    
+    $spacing = 30
+    $xBorder = 130
+    $yBorder = 100
+    $yPos = 10  # this will be incremented
+    $xPos = 10
+    $labelWidth = $largestNameSize.width+50
+    $boxWidth = $largestStringSize.width
+    $boxXlocation=$largestNameSize.width+100
+    $submitButtonText = "Submit"
+    $cancelButtonText = "Cancel"
+    
+    
     # Create a form
+    
     $form = New-Object System.Windows.Forms.Form
     $form.Text = $title
-    $form.Width = 500
-    $form.Height = 100 + (40 * $prePopulatedData.Count)
+    $form.Width = $largestNameSize.width+$largestStringSize.width+$xBorder
+    $form.Height = $yBorder + ($spacing * $configNames.Count)
+    $form.Font = $Font
+    
 
     # Create a hash table to hold the textboxes for each field
     $textBoxes = @{}
 
-    # Position counters
-    $yPos = 10
-    $labelWidth = 150
-    $boxWidth = 300
 
-    # Create labels and text boxes dynamically based on keys in prePopulatedData
-    foreach ($key in $prePopulatedData) {
+    # Create labels and text boxes dynamically based on keys
+    foreach ($key in $configNames) {
         # Create a label for each key
         $label = New-Object System.Windows.Forms.Label
         $label.Text = "$key"
         $label.Width = $labelWidth
-        $label.Location = New-Object System.Drawing.Point(10, $yPos)
+        $label.Location = New-Object System.Drawing.Point($xPos, $yPos)
         $form.Controls.Add($label)
 
         # Create a text box for each value
         $textBox = New-Object System.Windows.Forms.TextBox
         $textBox.Width = $boxWidth
-        $textBox.Location = New-Object System.Drawing.Point(170, $yPos)
+        $textBox.Location = New-Object System.Drawing.Point($boxXlocation, $yPos)
         # Handle null values
         $textBox.Text = if ($config.$key -eq $null) { "" } else { $config.$key }
         $form.Controls.Add($textBox)
@@ -49,21 +81,20 @@ function Create-Form {
         $textBoxes[$key] = $textBox
 
         # Increment position for next set of controls
-        $yPos += 40
+        $yPos += $spacing
     }
 
     # Create a button to submit
     $button = New-Object System.Windows.Forms.Button
-    $button.Text = "Submit"
+    $button.Text = $submitButtonText
     $button.DialogResult = [System.Windows.Forms.DialogResult]::OK
-    $button.Location = New-Object System.Drawing.Point(10, $yPos)
+    $button.Location = New-Object System.Drawing.Point($xPos, $yPos)
     $form.AcceptButton = $button
     $form.Controls.Add($button)
     
     $CancelButton = New-Object System.Windows.Forms.Button
-    $CancelButton.Location = New-Object System.Drawing.Point(150,$yPos)
-    $CancelButton.Size = New-Object System.Drawing.Size(75,23)
-    $CancelButton.Text = "Cancel"
+    $CancelButton.Text = $cancelButtonText
+    $CancelButton.Location = New-Object System.Drawing.Point(($xPos+$xBorder), $yPos)
     $CancelButton.DialogResult = [System.Windows.Forms.DialogResult]::Cancel
     $form.CancelButton = $CancelButton
     $form.Controls.Add($CancelButton)
@@ -72,29 +103,26 @@ function Create-Form {
 
     # Show the form and capture the result
     $result = $form.ShowDialog()
+    
+    $data = @{}
 
     if ($result -eq [System.Windows.Forms.DialogResult]::OK) {
         write-host "Submit pressed"
-        $data = @{}
+        #$data = @{}
         foreach ($key in $textBoxes.Keys) {
             $data[$key] = $textBoxes[$key].Text
         }
-        
-        $buttonData = @{
-        result        = "OK"
-        data      = $data
-        }
-
     }
     else {
         
-        $buttonData = @{
-        result        = "Cancel"
-        data      = ""
-        }
-        
+        $data   = $config
     }
-        
+    
+    $buttonData = @{
+                    result = $result
+                    data   = $data
+    }   
+    
     #write-host "result is:" $buttonData.result
     #write-host "data is:" $buttonData.data     
     return $buttonData
@@ -474,13 +502,13 @@ if (Test-Path $configFile) {
     # Read the existing JSON file
     $config = Get-Content -Path $configFile -Raw | ConvertFrom-Json
 
-
+    $config
     
     # Populate prePopulatedData with the fields from the JSON
-    $prePopulatedData = ($config.psobject.properties) | ForEach-Object -Process {$_.Name}
+    #$prePopulatedData = ($config.psobject.properties) | ForEach-Object -Process {$_.Name}
 
     # Display the form & capture the result
-    $myForm = Create-Form -prePopulatedData $prePopulatedData -title "AAP API Installer"
+    $myForm = Create-Form -config $config -title "AAP API Installer"
     
     if ($myForm.result -eq "OK") {
         "Form submitted"
