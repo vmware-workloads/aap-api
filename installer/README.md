@@ -3,6 +3,21 @@
 Installs the AAP API ABX action, custom resource and secrets as defined in the config file.
  
 
+## Prerequisites
+
+-   Aria Automation 8.16 or higher
+-   (Python installer) Python 3.10 or higher on the machine where the script will be executed
+
+
+Download and copy the files into a local directory
+
+## Files 
+- `config.json`: installer configuration file.
+- `install.ps1`: Windows installer.
+- `install.py`: Python installer.
+- `aao_api.py`: aria ABX action to be installed.
+
+
 ## Installation
 
 ### Windows
@@ -10,7 +25,7 @@ Installs the AAP API ABX action, custom resource and secrets as defined in the c
 Run `install.ps1`
 
 
-### Linux, etc (Python)
+### Python Installer (multi platform)
 
 1. Configure values in config.json
 
