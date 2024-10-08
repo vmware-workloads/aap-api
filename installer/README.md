@@ -25,7 +25,7 @@ Sample values are shown below:
     "cr_name":  "AAP API Resource",
     "cr_type_name":  "Custom.AAP",
     "abx_action_name":  "AAP API ABX",
-    "ansible_url":  "https://wdc-ansible.vcf01.isvlab.vmware.com/",
+    "ansible_url":  "https://example.com",
     "ansible_user":  "admin",
     "ansible_password":  "P@ssword",
     "ansible_root_ca":  "XXXXXXX",
