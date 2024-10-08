@@ -1,14 +1,14 @@
 {
-  "ansible_url": "https://wdc-ansible.vcf01.isvlab.vmware.com/",
-  "ansible_user": "admin",
-  "ansible_password": "P@ssword123!",
-  "aria_base_url": "https://wdc-vrava.vcf01.isvlab.vmware.com",
-  "abx_action_name": "My_ABX",
-  "cr_name": "my_aap",
-  "cr_type_name": "Custom.myAAP",
-  "aria_username": "dharmesh.bhatt",
-  "aria_password": "6Bb7Dv}8FB$/O1&9?{62",
-  "project_name": "MY_PROJECT",
-  "skip_certificate_check": "True",
-  "ansible_root_ca": "XXXXXXX"
+    "project_name":  "my project",
+    "aria_base_url":  "https://example.com",
+    "aria_username":  "Iorek.Byrnison",
+    "aria_password":  "P@ssw0rd",
+    "cr_name":  "AAP API Resource",
+    "cr_type_name":  "Custom.AAP",
+    "abx_action_name":  "AAP API ABX",
+    "ansible_url":  "https://example.com",
+    "ansible_user":  "admin",
+    "ansible_password":  "P@ssword",
+    "ansible_root_ca":  "XXXXXXX",
+    "skip_certificate_check":  "True"
 }
