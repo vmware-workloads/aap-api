@@ -1,5 +1,4 @@
 # AAP API Installer
-==========================
 
 Installs the AAP API ABX action, custom resource and secrets as defined in the config file.
  
