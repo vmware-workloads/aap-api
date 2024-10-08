@@ -302,20 +302,20 @@ function Create-OrUpdateAbxAction {
         provider                = ""
     }
     
-    #$myjson = $body | ConvertTo-Json
-    #write-host $myjson
+    $jsonBody = $body | ConvertTo-Json -Depth 100
+    #write-host $existing
 
     # If the action exists, update it
     if ($existing) {
         $abxActionId = $existing[0].id
         $body.id = $abxActionId
         $url = "$baseUrl/abx/api/resources/actions/$abxActionId"
-        $response = Invoke-RestMethod -Uri $url -Headers $headers -Method Put -Body ($body | ConvertTo-Json) 
+        $response = Invoke-RestMethod -Uri $url -Headers $headers -Method Put -Body $jsonBody 
     }
     else {
         # Create a new ABX action if it doesn't exist
         $url = "$baseUrl/abx/api/resources/actions"
-        $response = Invoke-RestMethod -Uri $url -Headers $headers -Method Post -Body ($body | ConvertTo-Json) 
+        $response = Invoke-RestMethod -Uri $url -Headers $headers -Method Post -Body $jsonBody 
         $abxActionId = $response.id
     }
 
@@ -404,7 +404,7 @@ function Get-Secrets {
 
     # Assuming the response is a JSON object containing "content" with an array of secrets
     $secretList = $response.content
-    
+
 
 
     # Filter the secrets based on name and projectId
@@ -413,6 +413,8 @@ function Get-Secrets {
         if ($secret.name -in $secrets -and $secret.projectId -eq $projectId) {
             $filteredSecrets += $secret
         }
+        #write-host $secret.name
+        
     }
 
     # Validate that all expected secrets are present
@@ -450,7 +452,6 @@ function Create-Secrets {
     foreach ($name in $inputs.Keys) {
         $value = $inputs[$name]
         
-
         
         # Prepare the body for the request
         $body = @{
@@ -459,25 +460,26 @@ function Create-Secrets {
             projectId = $projectId
         }
         
-
         
         # Get the existing secret (filtered by name)
         $url = "$baseUrl/platform/api/secrets?`$filter=name eq '$name'"
         $response = Invoke-RestMethod -Uri $url -Headers $headers -Method Get 
         
         $jsonBody = $body | ConvertTo-Json -Depth 100
-        #$jsonBody
+        $jsonBody
         
         # Check if the secret already exists
         $existingSecrets = $response.content
-        if ($existingSecrets.Count -gt 0) {
+        if ($existingSecrets.projectId -eq $projectId) {
+            
             # Update the existing secret
-            #write-host "updating existing secrets"
+            write-host "updating existing secrets"
             $id = $existingSecrets[0].id
             $url = "$baseUrl/platform/api/secrets/$id"
             #$url
             $response = Invoke-RestMethod -Uri $url -Headers $headers -Method Patch -Body $jsonBody 
             $response | out-null  # Optionally suppress output
+
         }
         else {
             # Create a new secret if it doesn't exist
