@@ -15,7 +15,7 @@ Download and copy the files into a local directory
 - `config.json`: installer configuration file.
 - `install.ps1`: Windows installer.
 - `install.py`: Python installer.
-- `aao_api.py`: aria ABX action to be installed.
+- `aap_api.py`: aria ABX action to be installed.
 
 
 ## Installation
