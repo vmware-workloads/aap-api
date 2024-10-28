@@ -274,8 +274,6 @@ function Create-OrUpdateAbxAction {
 
     $existing = $response.content | Where-Object { $_.name -eq $abxActionName }
     
-    $secretIdTable = $secretId | ForEach-Object { $_ = "" } 
-    
     $myScriptSource = Get-Content -Raw -Path $abxScript | out-string
 
     # Prepare the body for the request
@@ -285,7 +283,7 @@ function Create-OrUpdateAbxAction {
         runtime                 = "python"
         source                  = $myScriptSource 
         entrypoint              = "handler"
-        inputs                  = $secretIdTable
+        inputs                  = $secretIds
         cpuShares               = 1024
         memoryInMB              = 200
         timeoutSeconds          = 900
