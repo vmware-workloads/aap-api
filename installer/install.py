@@ -6,6 +6,7 @@ urllib3.disable_warnings()
 from datetime import datetime
 import time
 import sys
+import base64
 
 
 sourceId = "" 
@@ -13,7 +14,7 @@ contentSourceId = ""
 
 
 
-abxScript = f'aap_api.py' # Name of the ABX script to 'install'
+abxScript = f'aap_api.zip' # Name of the ABX script to 'install'
 configFile = f'config.json' # Name of the configuration file
 
 
@@ -131,6 +132,77 @@ def createOrUpdateAbxAction(projectId,secretIds):
         abxActionId = resp.json()["id"]
         return abxActionId
 
+
+
+def createOrUpdateAbxActionBundle(projectId,secretIds):
+    """
+        Creates or updates an ABX action in the specified project.
+
+        Args:
+            projectId (str): The ID of the project.
+            secretIds (list): A list of secret IDs.
+
+        Returns:
+            str: The ID of the created or updated ABX action.
+    """
+
+
+    # Get the list of existing ABX actions
+    url = f'{baseUrl}/abx/api/resources/actions'
+    resp = requests.get(url, headers=headers, verify=False)
+    #print(resp.status_code, resp.text)    
+    resp.raise_for_status()
+    existing = [x for x in resp.json()["content"] if x["name"] == abxActionName]
+
+
+    with open(abxScript, "rb") as file:
+        encoded_file = base64.b64encode(file.read()).decode("utf-8")
+
+
+
+
+    body = {
+        "name":abxActionName,
+        "metadata":{},
+        "runtime": "python",
+        "compressedContent": encoded_file,
+        "contentResourceName": abxScript,
+        "entrypoint":"aap_api.handler",
+        "inputs":{secret:"" for secret in secretIds},
+        "cpuShares":1024,
+        "memoryInMB":200,
+        "timeoutSeconds":900,
+        "deploymentTimeoutSeconds":900,
+        "dependencies": "requests",        
+        "actionType":"SCRIPT",
+        "configuration":{},
+        "system":False,
+        "shared":True,
+        "asyncDeployed":False,
+        "runtimeVersion": "3.10",        
+        "projectId":projectId,
+        "scriptSource":0,
+        "provider":""
+    }
+    if len(existing) > 0:
+        abxActionId = existing[0]["id"]
+        body["id"] = abxActionId
+        # If the specified ABX action already exists then update it
+        url = f'{baseUrl}/abx/api/resources/actions/{abxActionId}'
+        resp = requests.put(url, json=body, headers=headers, verify=False)
+        #print(resp.status_code, resp.text)
+        resp.raise_for_status()
+
+        return abxActionId
+    else:
+        # Create a new extensibility action (if it doesn't already exist) to perform the database CRUD operations
+        url = f'{baseUrl}/abx/api/resources/actions'
+        resp = requests.post(url, json=body, headers=headers, verify=False)
+        #print(resp.status_code, resp.text)
+        resp.raise_for_status()
+
+        abxActionId = resp.json()["id"]
+        return abxActionId
 
 
 def createOrUpdateAbxBasedCustomResource(projectId, abxActionId, propertySchema):
@@ -368,7 +440,8 @@ createSecrets(projectId, secrets)
 secretIds = getSecrets(projectId)
 
 # Create/update the ABX action 
-abxActionId = createOrUpdateAbxAction(projectId,secretIds)
+#abxActionId = createOrUpdateAbxAction(projectId,secretIds)
+abxActionId = createOrUpdateAbxActionBundle(projectId,secretIds)
 
 
 # Create/update the custom resource
