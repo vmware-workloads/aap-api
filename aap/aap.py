@@ -87,7 +87,7 @@ class Aap:
                 base_url=context.getSecret(inputs["aapURL"]),
                 username=context.getSecret(inputs["aapUser"]),
                 password=context.getSecret(inputs["aapPass"]),
-                ssl_verify=inputs.get("ssl_verify", True),
+                ssl_verify=inputs.get("aapSSL", True),
             )
         except KeyError as e:
             msg = "Failed to get a required credential parameter in inputs"
