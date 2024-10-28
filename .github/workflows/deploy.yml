@@ -45,7 +45,10 @@ jobs:
         ls ${{ github.workspace }}
 
     - name: Creating AAP API
-      run: zip -r aap_api.zip . -r -x "test/*" ".git/*" ".github/*" ".gitignore" "scripts/*" "assets/*" "__pycache__/*" "bin/*" "*.abx" "aap_*.zip"  "mypy*" "typing_extensions.py" "AriaA_Custom_Resource_Properties"
+      run: zip -r aap_api.zip . -r -x "test/*" ".git/*" ".github/*" ".gitignore" "scripts/*" "assets/*" "__pycache__/*" "bin/*" "*.abx" "aap_*.zip"  "mypy*" "typing_extensions.py" "AriaA_Custom_Resource_Properties" "installer/*"
+
+    - name: Creating AAP API Installer
+      run: zip -rj aap_api_installer.zip aap_api.zip installer/*
 
     - name: Create Release
       id: create_release
