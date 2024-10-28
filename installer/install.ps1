@@ -489,6 +489,8 @@ function Get-Secrets {
     }
 
     # Extract and return the secret IDs in the desired format
+    # Here we create a hash table with the secret as the key
+    # And the value as null (this is what the VCF Auto abx api expects)
     $secretIds = @{}
     foreach ($secret in $filteredSecrets) {
         $secretIds.add("psecret:$($secret.id)","")
