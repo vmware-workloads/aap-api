@@ -322,6 +322,74 @@ function Create-OrUpdateAbxAction {
     return $abxActionId
 }
 
+function Create-OrUpdateAbxActionBundle {
+    param (
+        [string]$projectId,  # The ID of the project
+        [array]$secretIds,   # List of secret IDs
+        [string]$abxActionName,
+        [string]$abxScript,
+        [string]$baseUrl,
+        [hashtable]$headers  # The headers (e.g., authorization)
+    )
+
+    # Get the list of existing ABX actions
+    $url = "$baseUrl/abx/api/resources/actions"
+    $response = Invoke-RestMethod -Uri $url -Headers $headers -Method Get 
+
+    $existing = $response.content | Where-Object { $_.name -eq $abxActionName }
+    
+    $secretIdTable = $secretId | ForEach-Object { $_ = "" } 
+    
+
+    # Read the file and encode it in base64
+    $encoded_file = [Convert]::ToBase64String([System.IO.File]::ReadAllBytes($abxScript))
+
+    # Prepare the body for the request
+    $body = @{
+        name                    = $abxActionName
+        metadata                = @{}
+        runtime                 = "python"
+        compressedContent       = $encoded_file
+        contentResourceName     = $abxScript
+        source                  = $myScriptSource 
+        entrypoint              = "handler"
+        inputs                  = $secretIdTable
+        cpuShares               = 1024
+        memoryInMB              = 200
+        timeoutSeconds          = 900
+        deploymentTimeoutSeconds = 900
+        dependencies            = "requests"
+        actionType              = "SCRIPT"
+        configuration           = @{}
+        system                  = $false
+        shared                  = $true
+        asyncDeployed           = $false
+        runtimeVersion          = "3.10"
+        projectId               = $projectId
+        scriptSource            = 0
+        provider                = ""
+    }
+    
+    $jsonBody = $body | ConvertTo-Json -Depth 100
+    #write-host $existing
+
+    # If the action exists, update it
+    if ($existing) {
+        $abxActionId = $existing[0].id
+        $body.id = $abxActionId
+        $url = "$baseUrl/abx/api/resources/actions/$abxActionId"
+        $response = Invoke-RestMethod -Uri $url -Headers $headers -Method Put -Body $jsonBody 
+    }
+    else {
+        # Create a new ABX action if it doesn't exist
+        $url = "$baseUrl/abx/api/resources/actions"
+        $response = Invoke-RestMethod -Uri $url -Headers $headers -Method Post -Body $jsonBody 
+        $abxActionId = $response.id
+    }
+
+    return $abxActionId
+}
+
 
 function Create-OrUpdateAbxBasedCustomResource {
     param (
@@ -583,7 +651,8 @@ $abxActionParams = @{ 'projectID' = $projectId;
                       
 
 # Create/update the ABX action 
-$abxActionId = Create-OrUpdateAbxAction @abxActionParams
+#$abxActionId = Create-OrUpdateAbxAction @abxActionParams
+$abxActionId = Create-OrUpdateAbxActionBundle @abxActionParams
 
 
 # Create/update the custom resource
