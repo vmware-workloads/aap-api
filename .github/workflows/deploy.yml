@@ -1,8 +1,9 @@
+
 on:
   push:
     tags:
       - v*
-      
+
 jobs:
   build:
     permissions: write-all
@@ -17,11 +18,11 @@ jobs:
         cat << OBJECT
         ${{ toJson(github) }}
         OBJECT
-    
+
     - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
     - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
     - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-    
+
     - name: Check out repository code
       uses: actions/checkout@v4
 
@@ -35,26 +36,20 @@ jobs:
       run: |
         ls ${{ github.workspace }}
     - run: echo "🍏 This job's status is ${{ job.status }}."
-    
+
     - name: Download libraries
       run: pip install -r requirements.txt --target=./
 
     - name: List files in the repository
       run: |
         ls ${{ github.workspace }}
-    
+
     - name: Creating AAP API
-      run: zip -r aap_api.zip . -r -x ".git/*" ".github/*" ".gitignore" "scripts/*" "assets/*" "__pycache__/*" "bin/*" "*.abx" "aap_*.zip"  "aap_delete.*" "aap_read.*" "mypy*" "typing_extensions.py" "AriaA_Custom_Resource_Properties"
-
-    - name: Creating AAP Read
-      run: zip -r aap_read.zip . -r -x ".git/*" ".github/*" ".gitignore" "scripts/*" "assets/*" "__pycache__/*" "bin/*" "*.abx" "aap_*.zip" "aap_delete.*" "aap_api.*" "mypy*" "typing_extensions.py" "AriaA_Custom_Resource_Properties"
-
-    - name: Creating Delete
-      run: zip -r aap_delete.zip . -r -x ".git/*" ".github/*" ".gitignore" "scripts/*" "assets/*" "__pycache__/*" "bin/*" "*.abx" "aap_*.zip" "aap_api.*" "aap_read.*" "mypy*" "typing_extensions.py" "AriaA_Custom_Resource_Properties"
+      run: zip -r aap_api.zip . -r -x "test/*" ".git/*" ".github/*" ".gitignore" "scripts/*" "assets/*" "__pycache__/*" "bin/*" "*.abx" "aap_*.zip"  "mypy*" "typing_extensions.py" "AriaA_Custom_Resource_Properties"
 
     - name: Create Release
       id: create_release
-      uses: actions/create-release@v1
+      uses: actions/create-release@v1.1.4
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
