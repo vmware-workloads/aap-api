@@ -47,8 +47,11 @@ jobs:
     - name: Creating AAP API
       run: zip -r aap_api.zip . -r -x "test/*" ".git/*" ".github/*" ".gitignore" "scripts/*" "assets/*" "__pycache__/*" "bin/*" "*.abx" "aap_*.zip"  "mypy*" "typing_extensions.py" "AriaA_Custom_Resource_Properties" "installer/*"
 
-    - name: Creating AAP API Installer
-      run: zip -rj aap_api_installer.zip aap_api.zip installer/*
+    - name: Creating AAP API Python Installer
+      run: zip -rj aap_api_installer_powershell.zip aap_api.zip installer/config.json installer/install.py
+
+    - name: Creating AAP API PowerShell Installer
+      run: zip -rj aap_api_installer_python.zip aap_api.zip installer/config.json installer/install.ps1
 
     - name: Create Release
       id: create_release
