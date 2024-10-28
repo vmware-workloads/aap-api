@@ -110,11 +110,15 @@ def handler(context: object, inputs: dict):
     log = create_console_log(log_level=log_level)
 
     # Validate required inputs
+    missing_inputs =False
     for item in ['aapURL', 'aapUser', 'aapPass', 'inventory_name', 'job_template_name', '__metadata']:
         if item not in inputs:
             msg = f"Missing required input '{item}' in inputs"
             log.critical(msg)
-            raise ValueError(msg)
+            missing_inputs = True
+
+    if missing_inputs:
+        return
 
     # Print metadata
     for key, value in inputs['__metadata'].items():
