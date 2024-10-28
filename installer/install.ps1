@@ -1,5 +1,5 @@
 
-$abxScript = 'aap_api.py' # Name of the ABX script to 'install'
+$abxScript = 'aap_api.zip' # Name of the ABX script to 'install'
 $configFile = 'config.json' # Name of the configuration file
 
 
@@ -325,7 +325,7 @@ function Create-OrUpdateAbxAction {
 function Create-OrUpdateAbxActionBundle {
     param (
         [string]$projectId,  # The ID of the project
-        [array]$secretIds,   # List of secret IDs
+        [hashtable]$secretIds,   # List of secret IDs
         [string]$abxActionName,
         [string]$abxScript,
         [string]$baseUrl,
@@ -335,14 +335,13 @@ function Create-OrUpdateAbxActionBundle {
     # Get the list of existing ABX actions
     $url = "$baseUrl/abx/api/resources/actions"
     $response = Invoke-RestMethod -Uri $url -Headers $headers -Method Get 
-
     $existing = $response.content | Where-Object { $_.name -eq $abxActionName }
     
-    $secretIdTable = $secretId | ForEach-Object { $_ = "" } 
     
+    $abxScriptLocation = Join-path -path $PWD -ChildPath aap_api.zip 
 
     # Read the file and encode it in base64
-    $encoded_file = [Convert]::ToBase64String([System.IO.File]::ReadAllBytes($abxScript))
+    $encoded_file = [Convert]::ToBase64String([System.IO.File]::ReadAllBytes($abxScriptLocation))
 
     # Prepare the body for the request
     $body = @{
@@ -352,8 +351,8 @@ function Create-OrUpdateAbxActionBundle {
         compressedContent       = $encoded_file
         contentResourceName     = $abxScript
         source                  = $myScriptSource 
-        entrypoint              = "handler"
-        inputs                  = $secretIdTable
+        entrypoint              = "aap_api.handler"
+        inputs                  = $secretIds
         cpuShares               = 1024
         memoryInMB              = 200
         timeoutSeconds          = 900
@@ -492,9 +491,9 @@ function Get-Secrets {
     }
 
     # Extract and return the secret IDs in the desired format
-    $secretIds = @()
+    $secretIds = @{}
     foreach ($secret in $filteredSecrets) {
-        $secretIds += "psecret:$($secret.id)"
+        $secretIds.add("psecret:$($secret.id)","")
     }
 
     # If no secret IDs were found, raise an error
