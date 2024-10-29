@@ -8,7 +8,7 @@ import urllib.parse
 from requests.auth import HTTPBasicAuth
 from typing import List, Type, TypeVar, ParamSpec
 
-from . import AriaInventory, AriaHosts, AriaHost, AapBase
+from . import AriaInventory, AriaHosts, AriaHost
 from .aap_groups import AapGroups
 from .aap_hosts import AapHosts
 from .aap_job import AapJob
@@ -83,6 +83,7 @@ class Aap:
         """
         log.debug(f"from_aria'")
         try:
+            # noinspection PyUnresolvedReferences
             return cls(
                 base_url=context.getSecret(inputs["aapURL"]),
                 username=context.getSecret(inputs["aapUser"]),
@@ -664,7 +665,7 @@ class Aap:
 
     def update_hosts_to_groups(self,
                                mapping: AriaGroupMapping,
-                               hosts: AapHosts, groups: AapGroups,
+                               groups: AapGroups,
                                inventory: AapInventory):
         log.info(f"update_hosts_to_groups ({mapping}")
 

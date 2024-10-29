@@ -162,22 +162,3 @@ def handler(context: object, inputs: dict):
     except requests.exceptions.ConnectionError as e:
         log.debug(e)
         log.critical(f"Aborting: Unable to connect to Ansible server")
-
-
-
-
-if __name__ == "__main__":
-    import json
-
-    with open('test/data/sample_2.5_update.json') as json_data:
-        data = json.load(json_data)
-
-    class Passthrough(object):
-        def __init__(self):
-            pass
-
-        @classmethod
-        def getSecret(cls, x):
-            return x
-
-    handler(Passthrough, data)

@@ -1,6 +1,6 @@
 import logging
 
-from aap import Aap, AriaInventory
+from aap import Aap
 
 log = logging.getLogger(__name__)
 

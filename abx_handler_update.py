@@ -36,7 +36,7 @@ def abx_update(context: object, inputs: dict) -> dict:
             msg = f"Found multiple an organization with name '{organization_name}' on server '{aap.base_url}'"
             log.critical(msg)
             raise ValueError(msg)
-        aap_organization = aap_organization[0]
+        #aap_organization = aap_organization[0]
 
         # Find Job Template
         # Must exist, no defaults
@@ -86,7 +86,6 @@ def abx_update(context: object, inputs: dict) -> dict:
         # Update hosts in groups
         log.info("Update hosts in groups")
         aap.update_hosts_to_groups(mapping=AriaGroupMapping.from_aria(inputs=inputs),
-                                   hosts=aap_hosts,
                                    groups=aap_groups,
                                    inventory=aap_inventory)
 

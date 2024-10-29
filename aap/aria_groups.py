@@ -53,15 +53,15 @@ class AriaGroups(Sized):
         log.debug(f"Initializing {cls.__class__} from Aria inputs")
         obj = cls(groups=[])
         host_groups = inputs.get("host_groups", {})
-        host_variables = inputs.get("host_variables", {})
+        # host_variables = inputs.get("host_variables", {})
         group_variables = inputs.get("group_variables", {})
 
         for group, hosts in host_groups.items():
             variables = group_variables.get(group, {})
-            aria_inputs = {
-                "hosts": hosts,
-                "host_variables": host_variables,
-            }
+            #aria_inputs = {
+            #    "hosts": hosts,
+            #    "host_variables": host_variables,
+            #}
             obj.groups.append(
                 AriaGroup(
                     name=group,
