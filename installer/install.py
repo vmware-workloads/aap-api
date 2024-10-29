@@ -344,7 +344,6 @@ def getSecrets(projectId):
 
     # Fetch and return the Ids of the secrets
     # credentials like hostname, username, password, certificate check and root CA
-    secrets=['aapURL', 'aapUser', 'aapPass', 'aapSSL', 'aapRootCA']
     filtered_list = [d for d in secretList if d.get("name") in secrets and d.get("projectId") == projectId]
     if not all(d["name"] in secrets for d in filtered_list):
         raise ValueError(f"Check secrets configuration :{secrets} for project :{projectId}")
