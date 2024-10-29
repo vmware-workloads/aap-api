@@ -448,7 +448,7 @@ properties = {
     "hosts": {"type": "object","title": "Hosts","description": "Array of hosts to add to the AAP inventory"},
     "verbose": {"type": "boolean","title": "Verbose Messages","description": "Enable verbose messages for debugging","default": False},
     "aapURL": {"type": "string","title": "Ansible Server URL","description": "URL of the Ansible Automation Platform REST API","default": ""},
-    "aapSSL": {"type": "boolean","title": "Ansible Server URL","description": "Verify SSL Connection to the Ansible Server","default": "False"},      
+    "aapSSL": {"type": "boolean","title": "Ansible Server Verify SSL Connection","description": "Verify SSL Connection to the Ansible Server","default": "False"},      
     "host_groups": {"type": "object","title": "Ansible inventory host groups","description": "(optional) Dictionary with groups as key and list of hosts in that group.","default": {}},
     "host_variables": {"type": "object","title": "Ansible inventory host variables","description": "(optional) Any host variables to pass on to AAP","default": {}},
     "inventory_name": {"type": "string","title": "Ansible inventory name","description": "The name of the inventory to be created on Ansible Automation Platform"},
