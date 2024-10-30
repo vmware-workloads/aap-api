@@ -106,10 +106,28 @@ def abx_update(context: object, inputs: dict) -> dict:
             case _:
                 log.warning(aap_job)
 
-        outputs = inputs
-        outputs['update'] = True
-        # outputs['id'] = aap_inventory.id
-        # outputs['status'] = aap_job.status
+        outputs = {
+            "status": aap_job.status.lower(),
+            "operation": "update",
+            "inventory": {
+                "id": aap_inventory.id,
+                "url": aap_inventory.url,
+                "name": aap_inventory.name,
+                "variables": aap_inventory.variables,
+            },
+            "groups": {
+                group.name: {
+                    "id": group.id,
+                    "url": group.url,
+                    "variables": group.variables,
+                } for group in aap_groups},
+            "hosts": {
+                host.name: {
+                    "id": host.id,
+                    "url": host.url,
+                    "variables": host.variables,
+                } for host in aap_hosts},
+        }
 
         return outputs
 

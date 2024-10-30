@@ -25,6 +25,12 @@ class AriaGroupMapping:
         log.debug(f"Initializing {cls.__class__} from Aria inputs")
         obj = cls()
         obj.host_groups = inputs.get("host_groups", {})
+
+        # aria passes single hosts are a list of dict, but multiples hosts are a list of lists of dict
+        for k, v in obj.host_groups.items():
+            if not all(isinstance(el, list) for el in v):
+                obj.host_groups[k] = [v]
+
         obj.host_groups_flat = {group: [host for host_l in host_ll for host in host_l] for group, host_ll in obj.host_groups.items()}
         obj.host_groups_inverted = invert_dict(
             d=inputs.get("host_groups", {}), name="resourceName"

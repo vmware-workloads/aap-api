@@ -31,19 +31,24 @@ def abx_delete(context: object, inputs: dict):
             log.critical(msg)
             raise ValueError(msg)
 
-        # Create output
-        outputs = inputs
+        # No inventory found
+        if not aap_inventories:
+            log.warning(f"No inventory found.")
+            return {}
 
         # Delete inventory
-        if aap_inventories:
-            aap_inventory = aap_inventories[0]
-            log.info(f"Found inventory at {aap_inventory.url}")
-            aap.delete_inventory(inventory=aap_inventory)
+        aap_inventory = aap_inventories[0]
+        log.info(f"Found inventory at {aap_inventory.url}")
+        aap.delete_inventory(inventory=aap_inventory)
 
-            outputs['delete'] = True
-            # outputs['id'] = aap_inventory.id
+        outputs = {
+            "operation": "delete",
+            "inventory": {
+                "id": aap_inventory.id,
+                "url": aap_inventory.url,
+                "name": aap_inventory.name,
+                "variables": aap_inventory.variables,
+            },
+        }
 
-        else:
-            log.warning(f"No inventory found.")
-
-    return outputs
+        return outputs

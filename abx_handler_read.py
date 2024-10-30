@@ -29,8 +29,16 @@ def abx_read(context: object, inputs: dict) -> dict:
             msg = f"Inventory '{inventory_name}' could not be found on server '{aap.base_url}'"
             log.critical(msg)
             raise ValueError(msg)
+        aap_inventory = aap_inventory[0]
 
-        outputs = inputs
-        # outputs['id'] = aap_inventory.id
+        outputs = {
+            "operation": "read",
+            "inventory": {
+                "id": aap_inventory.id,
+                "url": aap_inventory.url,
+                "name": aap_inventory.name,
+                "variables": aap_inventory.variables,
+            },
+        }
 
         return outputs

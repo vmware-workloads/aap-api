@@ -48,7 +48,7 @@ def abx_create(context: object, inputs: dict) -> dict:
             log.critical(msg)
             raise ValueError(msg)
         if len(aap_job_template) > 1:
-            msg = f"Found multiple job template with name '{organization_name}' on server '{aap.base_url}'"
+            msg = f"Found multiple job template with name '{job_template_name}' on server '{aap.base_url}'"
             log.critical(msg)
             raise ValueError(msg)
         aap_job_template = aap_job_template[0]
@@ -59,13 +59,13 @@ def abx_create(context: object, inputs: dict) -> dict:
         log.info(f"Inventory name: '{inventory_name}'")
         aap_inventory = aap.search_inventories(name=inventory_name)
         if len(aap_inventory) > 1:
-            msg = f"Found multiple inventories with name '{inventory_name}' on server '{aap.base_url}'"
-            log.critical(msg)
-            raise ValueError(msg)
+            err = f"Found multiple inventories with name '{inventory_name}' on server '{aap.base_url}'"
+            log.critical(err)
+            raise ValueError(err)
         if len(aap_inventory) == 1:
-            msg = f"Inventory '{inventory_name}' already exists on server '{aap.base_url}'"
-            log.critical(msg)
-            raise ValueError(msg)
+            err = f"Inventory '{inventory_name}' already exists on server '{aap.base_url}'"
+            log.critical(err)
+            raise ValueError(err)
 
         # Create inventory
         log.info(f"Creating inventory '{inventory_name}")
@@ -84,9 +84,9 @@ def abx_create(context: object, inputs: dict) -> dict:
 
         # Add hosts to groups
         log.info(f"Adding hosts to groups")
-        aap_host_groups = aap.add_hosts_to_groups(mapping=AriaGroupMapping.from_aria(inputs=inputs),
-                                                  hosts=aap_hosts,
-                                                  groups=aap_groups)
+        aap.add_hosts_to_groups(mapping=AriaGroupMapping.from_aria(inputs=inputs),
+                                hosts=aap_hosts,
+                                groups=aap_groups)
 
         # Launch job template
         log.info(f"Launching job template with inventory")
@@ -105,8 +105,27 @@ def abx_create(context: object, inputs: dict) -> dict:
             case _:
                 log.warning(aap_job)
 
-        outputs = inputs
-        # outputs['create'] = True
-        # outputs['id'] = aap_inventory.id
+        outputs = {
+            "status": aap_job.status.lower(),
+            "operation": "create",
+            "inventory": {
+                "id": aap_inventory.id,
+                "url": aap_inventory.url,
+                "name": aap_inventory.name,
+                "variables": aap_inventory.variables,
+            },
+            "groups": {
+                group.name: {
+                    "id": group.id,
+                    "url": group.url,
+                    "variables": group.variables,
+                } for group in aap_groups},
+            "hosts": {
+                host.name: {
+                    "id": host.id,
+                    "url": host.url,
+                    "variables": host.variables,
+                } for host in aap_hosts},
+        }
 
         return outputs
