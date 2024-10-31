@@ -455,13 +455,14 @@ function Create-OrUpdateAbxBasedCustomResource {
 
 function Get-Secrets {
     param (
-        [string]$projectId,  # The ID of the project
-        [string]$baseUrl,    # Base URL for the API
-        [hashtable]$headers  # The headers (e.g., authorization)
+        [string]$projectId,           # The ID of the project
+        [string]$baseUrl,             # Base URL for the API
+        [hashtable]$headers,          # The headers (e.g., authorization)
+        [hashtable]$expected_secrets  # Expected Secrets to add (key-value pairs)		
     )
 
     # List of expected secret names
-    #$secrets = @('aapURL', 'aapUser', 'aapPass', 'aapSSL', 'aapRootCA')
+    $secrets = $expected_secrets.keys
 
     # Retrieve secrets from the platform API
     $url = "$baseUrl/platform/api/secrets?page=0&size=9999"
@@ -636,7 +637,7 @@ Create-Secrets -projectID $projectId -inputs $secrets -baseUrl $config.aria_base
 
 
 # Fetch the Ids of the secrets 
-$secretIds = Get-Secrets -projectID $projectId -baseUrl $config.aria_base_url -headers $headers
+$secretIds = Get-Secrets -projectID $projectId -baseUrl $config.aria_base_url -headers $headers -expected_secrets $secrets
 
 
 $abxActionParams = @{ 'projectID' = $projectId;
