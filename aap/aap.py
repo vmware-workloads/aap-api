@@ -83,12 +83,18 @@ class Aap:
         """
         log.debug(f"from_aria'")
         try:
+
+            # Aria action constants can only be passed as string...
+            ssl_verify = inputs.get("aapSSL", False)
+            if isinstance(ssl_verify, str):
+                ssl_verify = ssl_verify.lower() == "true"
+
             # noinspection PyUnresolvedReferences
             return cls(
-                base_url=context.getSecret(inputs["aapURL"]),
-                username=context.getSecret(inputs["aapUser"]),
+                base_url=inputs["aapURL"],
+                username=inputs["aapUser"],
                 password=context.getSecret(inputs["aapPass"]),
-                ssl_verify=inputs.get("aapSSL", True),
+                ssl_verify=ssl_verify,
             )
         except KeyError as e:
             msg = "Failed to get a required credential parameter in inputs"
