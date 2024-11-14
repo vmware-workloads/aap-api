@@ -91,8 +91,8 @@ class Aap:
 
             # noinspection PyUnresolvedReferences
             return cls(
-                base_url=inputs["aapURL"],
-                username=inputs["aapUser"],
+                base_url=context.getSecret(inputs["aapURL"]),
+                username=context.getSecret(inputs["aapUser"]),
                 password=context.getSecret(inputs["aapPass"]),
                 ssl_verify=ssl_verify,
             )
